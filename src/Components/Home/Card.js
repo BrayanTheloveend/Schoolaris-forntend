@@ -1,61 +1,50 @@
 
 import React, { forwardRef } from 'react'
-import { Box, Flex, Grid, GridItem, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Skeleton, Text, useColorModeValue } from "@chakra-ui/react";
 
 // prop-types is a library for typechecking of props
 
 
-const CardAnalitic = forwardRef(({ title, isLoading, percentage, icon, color, bg }, ref)=> {
+const CardAnalitic = forwardRef((props, ref)=> {
   return (
-    <GridItem  p={6} bg={color} rounded={14} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} ref={ref}>
-        <Grid gridTemplateColumns={'2fr 1fr'} h={'50px'} alignItems={'center'}  gap={2}>
-        
-            <GridItem display={'flex'} flexDir={'column'} gap={2}>
+    <GridItem 
+    px={6}
+    title={props.info} 
+    py={6}
+    ref={ref}
+    overflow={'hidden'} 
+    // bgGradient={`linear(to-l, ${props.colorOne}, ${props.colorTwo})`} 
+    bg={useColorModeValue('white', 'gray.800')}
+    rounded={8} 
+    display={'flex'}
+    alignItems={'center'}
+    justifyContent={'flex-start'}
+    border={'1px solid'}
+    borderColor={useColorModeValue('#efefef', 'gray.800')}
+    gap={{md: 3, base: 6}}
 
-                <Text 
-                    fontSize={'md'} 
-                    fontFamily={'Poppins Medium'}
-                    color={'white'}
-                    noOfLines={1}
-                    //color={useColorModeValue('gray.600', 'white')}
-                >
-                {title}
-                </Text>
+    {...props.style}>
+      <Flex flexDir={'column'} color={props.colorOne} >
+          <Skeleton isLoaded={props.isLoading}>
+            <Text fontWeight={600}  fontSize={'sm'} color={props.colorOne}>{props.total}</Text>
+          </Skeleton>
+          <ion-icon name={props.icon} style={{fontSize: '30px'  }}>
+          </ion-icon>
+      </Flex>
+      <Flex flexDir={'column'} gap={1} >
+        <Text  fontWeight={600} color={useColorModeValue('gray.600', 'gray.400')} fontSize={{md:'xl', base: 'md'}}>{props.title}</Text>
+        <Text fontSize={'md'} noOfLines={1} m={0}>{props.label}</Text>
+      </Flex>
 
-                <Flex justifyContent={"left"} alignItems={'center'}>
-                    <Skeleton isLoaded={isLoading}>
-                        <Text variant={'h4'}
-                            m={0} 
-                            fontSize={'2xl'}
-                            fontWeight={'600'}
-                            noOfLines={1} 
-                            fontFamily={'Poppins extraBold'} 
-                            color={'white'}
-                            >
-                            { percentage }
-                        </Text>
-                    </Skeleton>
-
-                </Flex>
-
-            </GridItem>
-            <GridItem display={'flex'} justifyContent={'right'}>
-                <Box display={'flex'} justifyContent={"center"} 
-                alignItems={'center'} 
-                color={'white'}
-                border={'1px dashed'}
-                borderColor={'white'}
-                backgroundColor={color} 
-                rounded={'full'} 
-                height={"3.5rem"} 
-                width={"3.5rem"}>
-                {icon}
-                </Box>
-            </GridItem>
-        </Grid>
-    </GridItem>
+  </GridItem>
   );
 })
 
 
 export default CardAnalitic;
+
+
+
+
+
+

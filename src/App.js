@@ -9,6 +9,9 @@ import UnitLearning from './Components/UnitLearnings/UnitLearning';
 import { AnimatePresence } from 'framer-motion';
 import Payment from './Components/Payment/Payment';
 import Login from './Components/Auth/Login';
+import UserPage from './Components/UserPage';
+import ResetPassword from './Components/Auth/ResetPassword';
+import StudentDetails from './Components/Student/StudentDetails';
 
 function App() {
   return (
@@ -16,8 +19,11 @@ function App() {
     <AnimatePresence>
       <BrowserRouter>
         <Routes>
-          <Route exact path='/' element={<Layout component={<Dashbord/>}/>}/>
+          <Route exact path='/' element={<UserPage/>}/>
+          <Route exact path='/resetPassword' element={<ResetPassword/>}/>
+          <Route exact path='/dash' element={<Layout component={<Dashbord/>}/>}/>
           <Route exact path='/student' element={<Layout component={<Student/>}/>}/>
+          <Route exact path='/student/Details/:userId/:subjectId' element={<Layout component={<StudentDetails/>}/>} />
           <Route exact path='/payment/:id/:idSubject' element={<Layout component={<Payment/>} />}/>
           <Route exact path='/teacher' element={<Layout component={<Teacher/>}/>}/>
           <Route exact path='/training' element={<Layout component={<Training/>}/>}/>

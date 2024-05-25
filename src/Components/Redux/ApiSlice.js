@@ -4,7 +4,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 export const ApiSlice = createApi({
     reducerPath: 'Api',
     tagTypes: ['Student', 'Subject', 'Unit', 'Teacher', 'Note', 'Assign', 'Payment', 'Admin', 'Role'],
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000/api',
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3001/api',
 
     //     prepareHeaders: (headers, {getState})=>{
     //      //const {article: {token}} = getState();
@@ -66,9 +66,12 @@ export const ApiSlice = createApi({
             invalidatesTags: ['Student']
         }),
 
+        getStudentInfo: builder.query({
+            query: ()=> `Student/GetStudentInfo`,
+        }),
+
         
     
-
         //CRUD Subjects
 
         getSubject: builder.query({
@@ -268,7 +271,13 @@ export const ApiSlice = createApi({
         //CRUD payment
 
         getPayment: builder.query({
-            query: ()=> '/Payment/GetPayment',
+            query: token =>({ 
+                url: '/Payment/GetPayment',
+                method: 'GET',
+                headers: {
+                    'Authorization': token
+                }
+            }),
             providesTags: ['Payment']
         }),
 
@@ -444,6 +453,7 @@ export const {
     useAddRoleMutation,
     useDeleteRoleMutation,
     useUpdateRoleMutation,
+    useGetStudentInfoQuery,
     usePrintStudentProfileMutation
     
 

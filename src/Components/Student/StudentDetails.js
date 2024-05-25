@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, Heading, IconButton, Image, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Skeleton, Text, Tfoot, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, Heading, Icon, IconButton, Image, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Skeleton, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   List,
@@ -12,11 +12,11 @@ import method2 from '../../assets/images/orange.png'
 import method3 from '../../assets/images/logo visa.png'
 import method4 from '../../assets/images/images.png'
 
-import { FiCheckCircle, FiChevronLeft, FiChevronRight, FiPlus, FiPrinter, FiSend } from 'react-icons/fi'
+import { FiArrowLeft, FiCheckCircle, FiChevronLeft, FiChevronRight, FiPlus, FiPrinter, FiSend } from 'react-icons/fi'
 import bgblue from '../../assets/images/bgstudent.webp'
 import dayjs from 'dayjs'
 import image from '../../assets/images/Dashboard/datanotfound.png'
-import { useAddNoteMutation, useDeleteNoteMutation, useGetNoteByUnitAndStudentQuery, useGetPaymentByStudentIdQuery, useGetSubjectByIdQuery, useGetUnitBySubjectQuery, usePrintStudentProfileMutation, useUpdateNoteMutation} from '../Redux/ApiSlice'
+import { useAddNoteMutation, useDeleteNoteMutation, useGetNoteByUnitAndStudentQuery, useGetPaymentByStudentIdQuery, useGetStudentByIdQuery, useGetSubjectByIdQuery, useGetUnitBySubjectQuery, usePrintStudentProfileMutation, useUpdateNoteMutation} from '../Redux/ApiSlice'
 import {
   Table,
   Thead,
@@ -31,10 +31,11 @@ import {
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
 import CustomModal from '../Custom/CustomModal'
-import { useNavigate } from 'react-router-dom'
-import { Maincolor, formatter } from '../theme'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { vert, formatter } from '../theme'
+import CustomHeading from '../Dashboard/CustomHeading'
 
-const StudentDetails = ({data, setToogle}) => {
+const StudentDetails = () => {
 
   //navigate between pages
 
@@ -42,6 +43,10 @@ const StudentDetails = ({data, setToogle}) => {
 
   const textColor = useColorModeValue('gray.600', 'gray.400')
   const text1 = useColorModeValue('gray.700', 'white')
+
+  //params
+
+  const { userId, subjectId } = useParams()
 
   //Modals
 
@@ -112,17 +117,32 @@ const StudentDetails = ({data, setToogle}) => {
 
   // REDUX DECLARATION
 
-  const request =  useGetSubjectByIdQuery(data.SubjectId)
-  const note = useGetNoteByUnitAndStudentQuery({id: data.id, index: data.SubjectId})
-  const unitLearning = useGetUnitBySubjectQuery(data.SubjectId)
-  const payment =useGetPaymentByStudentIdQuery(data.id)
+  const request =  useGetSubjectByIdQuery(subjectId)
+  const student = useGetStudentByIdQuery(userId)
+  const note = useGetNoteByUnitAndStudentQuery({id: userId, index: subjectId})
+  const unitLearning = useGetUnitBySubjectQuery(subjectId)
+  const payment =useGetPaymentByStudentIdQuery(userId)
   const [ADD] = useAddNoteMutation()
   const [DEL] = useDeleteNoteMutation()
   const [UPDATE] = useUpdateNoteMutation()
   const [PRINT] = usePrintStudentProfileMutation()
 
-  //GETUNIT LEARNINGS
 
+  //GETSTUDENTBYID
+
+  useEffect(() => {
+    if(student.isError){
+      if(student.error.status=== 401){
+        //navigate('/login')
+      }
+    }else if(student.isSuccess){
+
+      // showMessage('success', `${data.length} items found`, 'Fetch Task')
+    }
+  }, [student.isSuccess, student.isError, student.error])
+
+
+  //GETUNIT LEARNING
   useEffect(() => {
     if(unitLearning.isError){
       if(unitLearning.error.status=== 401){
@@ -136,7 +156,7 @@ const StudentDetails = ({data, setToogle}) => {
     }
   }, [unitLearning.isSuccess, unitLearning.isError, unitLearning.error])
 
-  //GETSTUDENTS
+  //GETSUBJECT
   
   useEffect(() => {
     if(request.isError){
@@ -177,12 +197,15 @@ const StudentDetails = ({data, setToogle}) => {
 
 
 
-  //CREATE REQUEST
+
+
+
+  //SUBMIT REQUEST
   
   const handleSubmit =()=>{
     setLoading(true);
     
-    ADD({...payload, percentId: 1, id: data?.id}).unwrap()
+    ADD({...payload, percentId: 1, id: userId}).unwrap()
     .then(resp =>{
       setLoading(false);
       setPayload({
@@ -258,7 +281,7 @@ const StudentDetails = ({data, setToogle}) => {
 
   const handlePrint = async()=>{
     let payload =  {
-      ...data, note: note.data, subject: request.data 
+      ...student.data, note: note.data, subject: request.data 
     }
 
     //console.log({'data': payload});
@@ -305,28 +328,27 @@ const StudentDetails = ({data, setToogle}) => {
       initial={{ y: '-100vh' }}
       animate={{ y: 0}}
     >
-      <Flex mb={16} alignItems={'center'} justifyContent={'space-between'}>
 
-        <Flex alignItems={'center'} justifyContent={'center'} gap={6}>
-          <IconButton colorScheme='blue' icon={<FiChevronLeft/>} onClick={()=>setToogle(false)} pr={1} rounded={'full'} fontSize={'2xl'}></IconButton>
-          <Flex gap={2} align={'center'}>
-            <Text fontSize={'xl'} color={text1} fontWeight={600}>Student Details</Text>
-          </Flex>
+      <CustomHeading title={'Gestions des Etudiants'} prevSection={'Etudiant'} currentSection={'Listes des etudiants'} nextSection={'Details'}/>
+
+      <Flex mb={14} mt={8} align={'center'} justifyContent={'space-between'}>
+
+
+        <Flex gap={4} align={'center'}>
+          <Icon color={vert} as={FiArrowLeft} fontSize={20}/>
+          <Link as={NavLink} fontSize={'xl'} to={'/student'} color={vert} fontWeight={600}>Back</Link>
         </Flex>
+        
 
-
-        <Button colorScheme={Maincolor} onClick={handlePrint} isLoading={loading}  isDisabled={!(note.isSuccess && request.isSuccess)} rounded={'full'} ><FiPrinter/> Imprimer</Button>
-  
-    
+        <Button colorScheme={'green'} color={vert} borderColor={vert} variant={'outline'} onClick={handlePrint} isLoading={loading}  isDisabled={!(note.isSuccess && request.isSuccess)} rounded={'full'} ><FiPrinter/> Imprimer</Button>
       </Flex>
-
 
       <Grid
         gap={5}
-        templateRows='repeat(2, 1fr)'
-        templateColumns='repeat(4, 1fr)'
+        templateRows={{base: 'unset', md: 'repeat(2, 1fr)'}}
+        templateColumns={{base: '1fr', md: 'repeat(4, 1fr)'}}
       >
-        <GridItem pos={'relative'} colSpan={4} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
+        <GridItem pos={'relative'} colSpan={{base: 1, md: 4}} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
           position: 'absolute',
           background: 'rgba(0, 0, 0, 0.30)',
           top: 0,
@@ -339,64 +361,112 @@ const StudentDetails = ({data, setToogle}) => {
           
         }}>
           
-          <Flex flexDir={'column'} zIndex={10} w={"full"} pos={'absolute'} bottom={'-30%'} gap={2} textAlign={'center'} alignItems={'center'}>
+          <Flex justifyContent={{base: 'center', md:'unset'}} flexDir={{base: 'row-reverse', md:'column'}} zIndex={10} h={'full'} w={"full"} pos={{base:'relative', md: 'absolute'}} bottom={{ base:'unset', md:'-50%'}} gap={2} textAlign={'center'} alignItems={'center'}>
           
-            <Text fontWeight={600}  lineHeight={8} noOfLines={2} fontSize={'2xl'} color={'white'}>
-              {`${data?.name} ${data?.surname}`}   
-            </Text>
-            <Text fontSize={'md'} fontWeight={500} color={'white'} >
-              {data?.email}    
-            </Text>
-
-            <Avatar size={'2xl'} mb={2} border={'5px solid'} borderColor={'white'} src={`http://localhost:3000/image/${data?.picture}`}/>
+            <Box textAlign={{base: 'left', md: 'unset'}}>
+              <Skeleton isLoaded={student.isSuccess}>
+                <Text fontWeight={600}  lineHeight={8} noOfLines={2} fontSize={{ base: 'xl', md:'2xl'}} color={'white'}>
+                {`${student.data?.name} ${student.data?.surname}`}   
+                </Text>
+              </Skeleton>
+              <Skeleton isLoaded={student.isSuccess}>
+                <Text fontSize={{ base: 'sm', md:'md'}} fontWeight={500} color={'white'} >
+                {student.data?.email}    
+                </Text>
+              </Skeleton>
+              
+            </Box>
+            
+            <Skeleton isLoaded={student.isSuccess}>
+              <Avatar size={{base: 'xl', md: '2xl'}} mb={2} border={{base: '4px solid', md: '5px solid'}} borderColor={'white'} src={`http://localhost:${process.env.REACT_APP_PORT}/image/${student.data?.picture}`}/>
+            </Skeleton>
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={10} mt={4} justifyContent={'space-between'} alignItems={'center'}>
             <Text fontWeight={600} fontFamily={'Poppins semiBold'} noOfLines={1} fontSize={'md'} color={'white'}>
-              ID #{data?.id}
+              ID #{userId}
             </Text>
 
-            <Text fontWeight={600} noOfLines={2} fontSize={'md'} fontFamily={'Poppins semiBold'} color={'white'}>
-              CreatAt: {dayjs(data.createdAt).format('DD/MM/YYYY')}
-            </Text>
+            <Skeleton isLoaded={student.isSuccess}>
+              <Text fontWeight={600} noOfLines={2} fontSize={'md'} fontFamily={'Poppins semiBold'} color={'white'}>
+                CreatAt: {dayjs(student.data?.createdAt).format('DD.MM.YYYY')}
+              </Text>
+            </Skeleton>
           </Flex>
         </GridItem>
 
 
-        <GridItem boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} colSpan={2} borderRadius={'30px'} p={6}>
+        <GridItem boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} colSpan={{base: 1, md: 2}} borderRadius={'30px'} p={6}>
           <Text fontSize={'md'} fontWeight={'500'} textAlign={'center'}>PROFILE</Text>
           <br />
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> <FiChevronRight/>  <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Full Name</Text></Flex> <Text>{data.name} {data.surname}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> 
+                <FiChevronRight/>  
+                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Full Name</Text>
+              </Flex>
+              <Skeleton isLoaded={student.isSuccess}>
+                <Text>{student.data?.name} {student.data?.surname}</Text>
+              </Skeleton>
+              
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Birthday </Text></Flex> <Text>{ dayjs(data.birthday).format('DD/MM/YYYY')}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
+                <FiChevronRight/>
+                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Birthday</Text>
+              </Flex> 
+              <Skeleton isLoaded={student.isSuccess}>
+                <Text>{ dayjs(student.data?.birthday).format('DD.MM.YYYY')}</Text>
+              </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Subject </Text></Flex> <Skeleton isLoaded={request.isSuccess}><Text>{request.data?.name} Niv {request.data?.level}</Text></Skeleton>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
+                <FiChevronRight/>
+                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>
+                  Subject 
+                </Text>
+              </Flex> 
+              <Skeleton isLoaded={request.isSuccess}>
+                <Text>{request.data?.name} Niv {request.data?.level}</Text>
+              </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Mobile </Text></Flex> <Text>+237 {data.mobile}</Text> 
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
+                <FiChevronRight/>
+                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>
+                Mobile 
+                </Text>
+              </Flex>
+              <Skeleton isLoaded={student.isSuccess}>
+                <Text>+237 {student.data?.mobile}</Text> 
+              </Skeleton> 
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Note Receipt </Text></Flex> <Link isDisabled={data?.profile == null} title='Mettre à jour le relevé de note' color='green.500' onClick={()=>openPdf(`http://localhost:3000/profile/${data?.profile}`)}>...Cliquez pour ouvrir</Link> 
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
+               <FiChevronRight/>
+               <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Note Receipt </Text>
+              </Flex>
+              <Skeleton isLoaded={student.isSuccess}>
+                <Link  title='Mettre à jour le relevé de note' color='green.500' onClick={()=>openPdf(`http://localhost:${process.env.REACT_APP_PORT}/profile/${student.data?.profile}`)}>...Cliquez pour ouvrir</Link> 
+              </Skeleton> 
             </ListItem>
           </List>
         </GridItem>
 
-        <GridItem boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} colSpan={2} borderRadius={'30px'} p={6}>
+        <GridItem boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} colSpan={{base: 1, md: 2}} borderRadius={'30px'} p={6}>
           <Text fontSize={'md'} fontWeight={'500'} textAlign={'center'}>SCHOOL</Text>
           <br />
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>School Fees</Text> <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins ExtraBold'}>{formatter.format(request.data?.fees)}</Text></Skeleton>
+              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>School Fees</Text> 
+              <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins ExtraBold'}>{formatter.format(request.data?.fees)}</Text>
+              </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
@@ -405,7 +475,7 @@ const StudentDetails = ({data, setToogle}) => {
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Statut </Text> <Text color={data.statut === 1 ? 'green.400' : 'red.400'}>{data.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
+              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Statut </Text> <Text color={student.data?.statut === 1 ? 'green.400' : 'red.400'}>{student.data?.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
             </ListItem>
 
             <ListItem  display={'flex'} justifyContent={'space-between'}>
@@ -424,9 +494,9 @@ const StudentDetails = ({data, setToogle}) => {
                 maxW: 'full'
               }}
 
-              placeholder={`Write message to ${data.name}`}
+              placeholder={`Write message to ${student.data?.name}`}
               />
-              <IconButton roundedRight={'full'} roundedLeft={'none'} pr={1} icon={<FiSend/>} onClick={()=>setWrite(!write)} colorScheme='blue'/>
+              <IconButton roundedRight={'full'} roundedLeft={'none'} pr={1} icon={<FiSend/>} onClick={()=>setWrite(!write)} colorScheme='green' bg={vert}/>
             </ListItem>
           </List>
 
@@ -437,7 +507,7 @@ const StudentDetails = ({data, setToogle}) => {
         <Flex justify={'space-between'} align={'center'}>
           <Text fontSize={'md'} fontWeight={'500'}>Note</Text>
           <Flex gap={2}>
-            <Button colorScheme='blue' rounded={'full'} onClick={onOpen}><FiPlus/> Ajouter</Button>
+            <Button colorScheme='green' bg={vert} rounded={'full'} onClick={onOpen}><FiPlus/> Ajouter</Button>
           </Flex>
         </Flex>
 
@@ -446,7 +516,7 @@ const StudentDetails = ({data, setToogle}) => {
           { note.isSuccess && note.data.length !== 0 ?
           <TableContainer mt={4}>
             <Table variant='simple'>
-             <TableCaption> { note.isSuccess && note.data.length !== 0 && 'These is count for 70% of the final Note' }</TableCaption> 
+             <TableCaption> { note.isSuccess && note.data.length !== 0 && 'Les notes ci-dessus representent 70% de la note Finale' }</TableCaption> 
               <Thead>
                 <Tr>
                   <Th>EXAMEN</Th>
@@ -485,7 +555,7 @@ const StudentDetails = ({data, setToogle}) => {
                <Tbody>
                   <Tr>
                     <Td fontSize={'md'}>Controle Continu</Td> 
-                    { note.isSuccess && note.data.map((item, index)=> <Td key={item} isNumeric textAlign={'center'} color={item.noteOne < 10 && 'red'} fontWeight={600} fontSize={'md'}>{item.noteOne}</Td>) }
+                    { note.isSuccess && note.data.map((item, index)=> <Td key={item.id} isNumeric textAlign={'center'} color={item.noteOne < 10 && 'red'} fontWeight={600} fontSize={'md'}>{item.noteOne}</Td>) }
                   </Tr>
               
                   <Tr>
@@ -499,7 +569,7 @@ const StudentDetails = ({data, setToogle}) => {
           :
           <Flex mb={6} flexDir={'column'} align={'center'} justify={'center'}>
             <Image src={image} maxW={{base: '6em', md: '6em'}} opacity={0.9} /> 
-            <Heading mt={3} fontSize={'sm'} color={'gray.400'}>No data to display</Heading>
+            <Heading mt={3} fontSize={'sm'} color={'gray.400'} textAlign={'center'}>Aucne données <br />disponible</Heading>
           </Flex>}
 
         </Skeleton>
@@ -511,11 +581,11 @@ const StudentDetails = ({data, setToogle}) => {
 
       <Box mt={4} w={'full'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} borderRadius={'30px'} p={6}>
         <Flex justify={'space-between'} align={'center'} mb={2}>
-          <Text fontSize={'md'} fontWeight={'500'}>Payment history</Text>
+          <Text fontSize={'md'} fontWeight={'500'}>Historique de paiement</Text>
           <Flex gap={2}>
           </Flex>
-            <Button colorScheme='blue' title='redirect to Payment page' rounded={'full'} onClick={()=>setTimeout(navigate, 0, `/payment/${data?.id}/${data?.SubjectId}`)}>
-              <FiCheckCircle/>Purchase
+            <Button colorScheme='green' bg={vert} title='redirect to Payment page' rounded={'full'} onClick={()=>setTimeout(navigate, 0, `/payment/${userId}/${subjectId}`)}>
+              <FiCheckCircle/>Payer
             </Button>
         </Flex>
 
@@ -524,13 +594,13 @@ const StudentDetails = ({data, setToogle}) => {
         { payment.isSuccess && payment.data.length !== 0 ?
           <TableContainer>
             <Table variant='simple'>
-              <TableCaption>Payment for current year</TableCaption>
+              <TableCaption>Paiement annuel</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Title</Th>
+                  <Th>Libellé</Th>
                   <Th>Initiateur</Th>
-                  <Th>method</Th>
-                  <Th>amount</Th>
+                  <Th>methode</Th>
+                  <Th>Montant</Th>
                   <Th>Options</Th>
                 </Tr>
               </Thead>
@@ -544,11 +614,11 @@ const StudentDetails = ({data, setToogle}) => {
                     <Td><Image src={methodPayment(item.method.toString())} w={'35px'}/></Td>
                     <Td fontWeight={600} fontSize={'md'} fontFamily={'Poppins extraBold'} color={textColor}>{formatter.format(item.amount)}</Td>
                     <Td>
-                      <IconButton 
+                      <IconButton
                         icon={<FiPrinter/>} 
-                        onClick={()=> openPdf(`http://localhost:3000/bill/${item.bill}`)}
+                        onClick={()=> openPdf(`http://localhost:${process.env.REACT_APP_PORT}/bill/${item.bill}`)}
                         title='Print Bill'
-                        size={{base: 'sm', md: 'sm'}} color={'blue.400'} />
+                        size={{base: 'sm', md: 'sm'}} color={vert} />
                     </Td>
                   </Tr>) 
                 }
@@ -577,7 +647,7 @@ const StudentDetails = ({data, setToogle}) => {
         <ModalHeader>{ onUpdate ? 'Update Note':'Add Student Note'}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Fill the following fields to ${ onUpdate ? 'Update':'Add'}`} <strong>{data?.name}'s notes</strong></Text>
+          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Fill the following fields to ${ onUpdate ? 'Update':'Add'}`} <strong>{student.data?.name}'s notes</strong></Text>
           
           <FormControl>
             <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}> <ion-icon name="archive-outline"></ion-icon> Unit Learning </FormLabel>
@@ -612,10 +682,10 @@ const StudentDetails = ({data, setToogle}) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button rounded={'md'} colorScheme='blue' mr={3} onClick={resetAndClose}>
+          <Button variant='outline' rounded={'md'} colorScheme='gray'  mr={3} onClick={resetAndClose}>
             Cancel
           </Button>
-          <Button variant='outline' isLoading={loading} rounded={'md'} colorScheme={onUpdate ? 'orange':'green'} isDisabled={disabled} onClick={onUpdate ? handleUpdate : handleSubmit}>{onUpdate ? 'Modifier':'Ajouter'}</Button>
+          <Button  bg={vert} isLoading={loading} rounded={'md'} colorScheme={onUpdate ? 'orange':'green'} isDisabled={disabled} onClick={onUpdate ? handleUpdate : handleSubmit}>{onUpdate ? 'Modifier':'Ajouter'}</Button>
         </ModalFooter>
         </ModalContent>
     </Modal>

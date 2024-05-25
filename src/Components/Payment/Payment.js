@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel, Grid, GridItem, Heading, Image, Input, InputGroup, InputLeftAddon, InputRightAddon, Select, Skeleton, Text, useColorModeValue, useToast } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
+import { color, motion } from 'framer-motion'
 import React, { useCallback, useEffect, useState } from 'react'
 import image from '../../assets/images/pay.jpg'
 import method1 from '../../assets/images/mtn.png'
@@ -11,6 +11,7 @@ import { FiCheckCircle } from 'react-icons/fi'
 import img2 from '../../assets/login-bg@2x.png'
 import { useAddPaymentMutation, useGenerateTokenMutation, useGetStudentByIdQuery, useGetSubjectByIdQuery, useRequestToPayMutation } from '../Redux/ApiSlice'
 import { v4 as uuidv4 } from 'uuid';
+import { vert } from '../theme'
 
 const Payment = () => {
 
@@ -192,7 +193,7 @@ const Payment = () => {
              title: ''
          })
          
-         setTimeout(navigate, 0, '/')
+         setTimeout(navigate, 0, '/dash')
        })
        .catch(err=>{
          showMessage('error', err.data.message, 'Payement', 7000, 'top-center');
@@ -217,8 +218,8 @@ const Payment = () => {
     >
         <Box textAlign={'center'} mt={12}>
             <Flex gap={4} align={'center'} justify={'center'}>
-                <ion-icon name="shield-checkmark-outline" style={{fontSize: '35px'}}></ion-icon>
-                <Heading color={'#56ace5'}>Secure Payment</Heading>
+                <ion-icon name="shield-checkmark-outline" style={{fontSize: '35px', color: vert}}></ion-icon>
+                <Heading color={vert}>Payement Securisée</Heading>
             </Flex>
             <br /><br />
             <Grid gridTemplateColumns={'250px 350px'} gridRow={'450px'} minW={'600px'} minH={'450px'} bg={bg} rounded={'25px'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
@@ -227,7 +228,7 @@ const Payment = () => {
                         {/* <Avatar size={'2xl'} src={img2}/> */}
 
                         <Box mt={4} textAlign={'left'}>
-                            <Text color={'white'}>Student Informations</Text><br />
+                            <Text color={'white'}>Informations de l'etudiant</Text><br />
                             
                             <Skeleton isLoaded={isSuccess}><Text fontFamily={'Poppins semiBold'} fontSize={'xl'} color={'white'}>{data?.name} {data?.surname} </Text></Skeleton>
                             <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins'} fontSize={'md'} color={'white'}>{request.data?.name}</Text></Skeleton>
@@ -247,7 +248,7 @@ const Payment = () => {
                 <GridItem px={6} py={4}>
                     <Box px={4}>
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'} >Title</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'} >Libellé</FormLabel>
                             <Input 
                                 border={'none'}  
                                 rounded={'none'} 
@@ -269,7 +270,7 @@ const Payment = () => {
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Payment Method</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Methode de paiement</FormLabel>
                             
                                 <Select 
                                     borderLeft={'none'} 
@@ -331,12 +332,13 @@ const Payment = () => {
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Amount</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Montant</FormLabel>
                             <InputGroup>
                                 <Input
                                 h={'40px'}  
                                 maxLength={100}
-                                fontFamily={'Poppins SemiBold'} 
+                                fontWeight={600}
+                                fontSize={'xl'}
                                 type='tel' 
                                 placeholder='Amount of Transaction'
                                 border={'none'}
@@ -366,7 +368,7 @@ const Payment = () => {
 
                         
                         <ButtonGroup spacing='6' mt={16} justifyContent={'center'} w={"full"}>
-                            <Button colorScheme='green' w={'60%'} rounded={'none'} loadingText={'Processing..'} onClick={handleSubmit} isLoading={loading}><FiCheckCircle/> &nbsp; Purchase</Button>
+                            <Button colorScheme='green' bg={vert} w={'60%'} rounded={'none'} loadingText={'Processing..'} onClick={handleSubmit} isLoading={loading}><FiCheckCircle/> &nbsp; Purchase</Button>
                             <Button rounded={'none'} w={'30%'} onClick={()=>setTimeout(navigate, 0, '/student')}>Cancel </Button>
                         </ButtonGroup>
 

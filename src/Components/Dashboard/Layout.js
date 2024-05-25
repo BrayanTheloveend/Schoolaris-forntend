@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Avatar,
   Box,
@@ -11,77 +11,60 @@ import {
   DrawerContent,
   useDisclosure,
   Link,
-  useToast,
-  Skeleton,
+  Button,
+  Image,
+ // useToast,
 } from '@chakra-ui/react'
-import { primaryLight } from '../theme'
-import { NavLink, useNavigate, redirect } from 'react-router-dom'
+import { primaryLight, vert } from '../theme'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 // import { useSignOut } from 'react-firebase-hooks/auth'
 // import { getAuth } from 'firebase/auth'
 
+import logo from '../../assets/logo.jpg'
+
 
 import MessageBox from './MessageBox'
 import Navbar from './Navbar'
-import { BiArch, BiBell, BiBookBookmark, BiCompass, BiGrid, BiPaperclip, BiUser } from 'react-icons/bi'
-import { useGetUserRoleByIdQuery} from '../Redux/ApiSlice'
-
+import { BiArch, BiBell, BiBookBookmark, BiPaperclip, BiSpeaker, BiUser } from 'react-icons/bi'
+import { FiBook, FiChevronLeft, FiNavigation, FiSettings, FiTrendingUp } from 'react-icons/fi'
 
 
 const LinkItems = [  
-  { name: 'Dashboard', icon: BiGrid, href: '/' , color: '#56aceb'},
-  { name: 'Trainings', icon: BiPaperclip, href: '/training', color: 'red.500' },
-  { name: 'Manage classes', icon:  BiBookBookmark, href: '/unit', color: 'orange.400'},
-  { name: 'Manage Students', icon:  BiCompass, href: '/student', color: '#32cd32'},
-  { name: 'Manage Teachers', icon: BiUser, href: '/teacher', color: '#e7522b' },
+  { name: 'Tableau de bord', icon: BiArch, href: '/dash' , color: '#56aceb'},
+  { name: 'Formations', icon: FiTrendingUp, href: '/training', color: 'red.500' },
+  { name: 'Gestion des Cours', icon:  FiBook, href: '/unit', color: 'orange.400'},
+  { name: 'Gestions des étudiants', icon:  FiNavigation, href: '/student', color: '#32cd32'},
+  { name: 'Professeur', icon: BiUser, href: '/teacher', color: '#e7522b' },
   { name: 'Notifications', icon: BiBell, href: '/order', color: 'pink.500' },
-  { name: 'Settings', icon: BiArch, href: '/order', color: 'blue.300' },
+  { name: 'Settings', icon: FiSettings, href: '/order', color: 'blue.300' },
 ]
 
 
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
+
+  const userDataSaved =  localStorage.getItem('userData')
 
   const linkColor = useColorModeValue('gray.600', 'gray.300')
-  const bgActive = useColorModeValue('#efefef', 'gray.900')
+  //const bgActive = useColorModeValue('#efefef', 'gray.900')
   const navigate = useNavigate()
 
-  if(!localStorage.getItem('userData')){
+
+  if(!userDataSaved){
     setTimeout(navigate, 0, '/login')
   }
 
-  const toast = useToast()
-  const showMessage = useCallback((type, msg, title)=>{
-    toast({
-      position: 'bottom-right',
-      title: title,
-      description: msg,
-      status: type,
-      duration: 3500,
-      isClosable: true,
-    })
-  }, [toast])
-
-
-  const {
-    data,
-    isError,
-    isSuccess,
-    error,
-    isLoading
-  } = useGetUserRoleByIdQuery(JSON.parse(localStorage.getItem('userData'))?.role)
-
-  useEffect(() => {
-    if(isError){
-      if(error.status === 401){
-        navigate('/login')
-      }
-      //console.log(error.error);
-      showMessage('error', 'Server has been stopped', 'Fetch Task')
-    }else if(isSuccess){
-      //console.log(data);
-      //showMessage('success', `${data.length} items found`, 'Fetch Task')
-    }
-  }, [isSuccess, isError, error, isLoading, data, navigate, showMessage])
+  // const toast = useToast()
+  // const showMessage = useCallback((type, msg, title)=>{
+  //   toast({
+  //     position: 'bottom-right',
+  //     title: title,
+  //     description: msg,
+  //     status: type,
+  //     duration: 3500,
+  //     isClosable: true,
+  //   })
+  // }, [toast])
 
   
 
@@ -93,69 +76,96 @@ const SidebarContent = ({ onClose, ...rest }) => {
       pos="fixed"
       zIndex={100}
       h="full"
+      transition={'ease width 0.5s'}
+      boxShadow={'0 0 12px rgba(0, 0, 0, 0.1)'}
       {...rest}>
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize={{base:"md", md: 'xl'}} textTransform={'uppercase'} fontFamily={'Poppins extraBold'} letterSpacing={2} color={primaryLight} fontWeight="bold">
-          Schoolaris
-        </Text>
+      <Flex h="20" alignItems="center" mx="8" justifyContent= "space-between">
+        {/* <Image src={expandValue ? logo : logo2 } w='160px' /> */}
+        <Flex gap={2} justify={'center'} align={'center'}>
+          <Image rounded={'4px'} src={logo} w='30px' />
+          <Text letterSpacing={-1} visibility={expandValue ? 'visible' : 'hidden'} color={useColorModeValue('gray.800','white')} fontSize={'2xl'} fontWeight={600}>Schoo<span style={{color: vert}}>laris</span></Text>
+        </Flex>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
 
-      <Flex mx={6} my={4} mb={8} gap={2} alignItems={'center'}>
+        <Button 
+            w='40px' 
+            h={'40px'} 
+            onClick={expand}
+            display={'flex'} 
+            justifyContent={'center'} 
+            alignItems={'center'} 
+            colorScheme='green' 
+            bg={vert}
+            rounded={'full'} 
+            position={'absolute'} 
+            right={-6}
+            >
+            <Icon
+            transition={'ease-in-out 0.5s all'}
+            as={FiChevronLeft}  
+            color={'white'}
+            fontSize={'22px'}
+          />
+          </Button> 
+
+       <Flex visibility={expandValue ? 'visible' : 'hidden'} mx={6} my={4} mb={8} gap={2} alignItems={'center'}>
         <Avatar
           w={'35px'}
           h={'35px'}
           src={
-            localStorage.getItem('userData') ? `http://localhost:3000/image/${ JSON.parse(localStorage.getItem('userData'))?.picture }` : 'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+            userDataSaved ? `http://localhost:${process.env.REACT_APP_PORT}/image/${ JSON.parse(userDataSaved)?.picture }` : 'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
           }
         />
 
         <Flex flexDir={'column'} gap={0} >
-          <Text fontSize={'16px'} color={useColorModeValue('gray.600', 'white')} fontWeight={'400'}>{ localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData'))?.name : 'User name'}</Text>
-          <Skeleton isLoaded={isSuccess}><Text fontSize={'sm'}>{ isSuccess ? data?.label.toLowerCase() : 'RoleOfUser'}</Text></Skeleton>
+          <Text fontSize={'16px'} color={useColorModeValue('gray.600', '#efefef')} fontWeight={'600'}>{ userDataSaved ? JSON.parse(userDataSaved)?.name : 'User name'}</Text>
+          <Text fontSize={'sm'} >{ userDataSaved ? JSON.parse(userDataSaved)?.roleName : 'RoleOfUser'}</Text>
         </Flex>
       </Flex>
 
-      <Box ml={8} mb={5}><Text fontWeight={600}>Navigation</Text></Box>
+      <Box ml={8} mt={14} mb={5} display={expandValue ? 'block' : 'none'}><Text fontWeight={600}>Navigation</Text></Box>
       {LinkItems.map((link,index) => (
         <Link 
         key={index}
         to={link.href}
         as={NavLink}
-        display={'flex'} 
+        display={'flex'}
         gap={4}
         textDecoration={'none'}  
         alignItems="center"
-        fontSize={'md'}
-        p="2"
-        py={3}
+        fontSize={'15px'}
+        fontWeight={500}
+        py={'10px'}
         pl={3}
         mx={3}
         role="group"
-        borderRightRadius={'25px'}
         color={linkColor}
         cursor="pointer"
         
-        _activeLink={{ bg: bgActive, borderLeft: "3px solid", borderLeftColor: primaryLight , fontFamily: 'Poppins semiBold'  }}
+        _activeLink={{ color: link.color, borderLeft: '2px solid', borderColor: link.color  }}
          _hover={{
-           bg: bgActive,
-            fontFamily: 'Poppins semiBold'
+           fontWeight: 600
          }}
         >
           <Icon
             rounded={'full'}
+            fontSize={'18px'}
             color={link.color}
-            // _groupHover={{
-            //   color: 'white',
-            // }}
+             _groupHover={{
+               color: link.color,
+             }}
 
             as={link.icon}
           />
           
-          {link.name}
+          { expandValue ? link.name : ''}
         </Link>
         
       ))}
+
+
+      {/* <Image src={sidebarBg} position={'absolute'} bottom={0} left={0}/> */}
     </Box>
   )
 }
@@ -164,10 +174,13 @@ const SidebarContent = ({ onClose, ...rest }) => {
 const Layout = ({component}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [message, setMessage] = useState(false)
+  const [expand, setExpand] = useState(true)
+
+  
 
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+    <Box minH="100vh" bg={useColorModeValue('#efefef', 'gray.900')}>
+      <SidebarContent w={expand ? '20em' : '5.6em' } expand={()=>setExpand(!expand)} expandValue={expand} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -181,7 +194,7 @@ const Layout = ({component}) => {
       </Drawer>
       {/* mobilenav */}
       <Navbar onOpen={onOpen} openMessage={()=>setMessage(!message)} />
-      <Box ml={{ base: 0, md: 80 }} p={{base: 8, md: 8}} overflowX={'hidden'}>          
+      <Box ml={{ base: 0, md: expand ? '18rem' : '6rem'}} p={{base: 8, md: 8}} overflowX={'hidden'}>          
         <>
           <br /><br /><br />
           {message && <MessageBox open={message} />}

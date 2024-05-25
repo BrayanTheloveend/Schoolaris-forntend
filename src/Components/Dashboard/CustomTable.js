@@ -22,7 +22,8 @@ import {
   ChevronLeftIcon
 } from "@chakra-ui/icons";
 import image from '../../assets/images/Dashboard/datanotfound.png'
-import ReactLoading from "react-loading";
+import CustomLoading from "./CustomLoading";
+
 
 
 function CustomTable({ columns, data, isLoading}) {
@@ -75,7 +76,7 @@ function CustomTable({ columns, data, isLoading}) {
           <Tr>
             <Td colSpan={12} alignContent={'center'} >
               <Flex width={'100%'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                { isLoading ? <ReactLoading type={'spin'} color="#A020F0" /> : <><Image src={image} maxW={{base: '8em', md: '15em'}} opacity={0.9} /> <Heading mt={3} fontSize={'xl'} color={'gray.400'}>No Data Found</Heading></>}
+                { isLoading ? <CustomLoading /> : <><Image src={image} maxW={{base: '8em', md: '10em'}} opacity={0.9} /> <Text mt={3} textAlign={'center'} fontSize={'md'} color={'gray.500'}>Aucune données <br /> disponibles</Text></>}
 
               </Flex>
             </Td>

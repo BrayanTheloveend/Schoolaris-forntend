@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Flex, Grid, GridItem, Icon, IconButton, Tab, TabList, TabPanel, TabPanels, Tabs, Tag, TagLabel, TagLeftIcon, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
-import { FiChevronLeft, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
+import { FiArrowLeft, FiChevronLeft, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
 import CustomTable from '../Dashboard/CustomTable'
 import TeacherDetails from './TeacherDetails'
 import AddTeacher from './AddTeacher'
 import { motion } from 'framer-motion'
-import { Maincolor, containerVariant } from '../theme'
+import { Maincolor, containerVariant, vert } from '../theme'
 import { useNavigate } from 'react-router-dom'
 import { useActiveTeacherMutation, useDeleteTeacherMutation, useGetTeacherQuery } from '../Redux/ApiSlice'
 import { CheckIcon, DeleteIcon, InfoIcon, WarningIcon } from '@chakra-ui/icons'
@@ -180,7 +180,7 @@ const Teacher = () => {
        key: elt.id,
        name: (
        <Flex gap={3}>
-        <Avatar size={{base: 'sm', md: 'md'}} src={`http://localhost:3000/image2/${elt.picture}`}/>
+        <Avatar size={{base: 'sm', md: 'md'}} src={`http://localhost:${process.env.REACT_APP_PORT}/image2/${elt.picture}`}/>
           <Box>
             <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={1} fontWeight={600}>
               {elt.name}
@@ -190,7 +190,7 @@ const Teacher = () => {
             </Text> 
           </Box>
         </Flex>), 
-        email: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={'blue.400'} fontFamily= {'Poppins Light'}> {elt.email} </Text>,   
+        email: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}> {elt.email} </Text>,   
         mobile: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontFamily={'Poppins SemiBold'} color={textcolor}> +237 {elt.mobile}</Text>,
         statut: <Tag size={{base: 'sm', md: 'md'}} variant='subtle' colorScheme={ elt?.statut === 0 ? 'yellow' : 'green'}>
           <TagLeftIcon boxSize='12px' as={elt?.status=== 0 ? WarningIcon : CheckIcon   } />
@@ -235,57 +235,38 @@ const Teacher = () => {
     variants={containerVariant}
     initial={'hidden'}
     animate={'visible'}>
-      <CustomHeading title={'Manage Teachers'} prevSection={'Teacher'} currentSection={'Listy of Teachers'} nextSection={ show ? 'Teacher Details' : null}/>
+      <CustomHeading title={'Gestions des Professeurs'} prevSection={'Professeurs'} currentSection={'Liste des Professeurs'} nextSection={ show ? 'Profil' : null}/>
 
-      <Tabs mt={10} colorScheme={Maincolor} isLazy>
-        <TabList>
-          <Tab>Proof</Tab>
-          <Tab>Assignment</Tab>
-          <Tab>Files</Tab>
-        </TabList>
+      
+      { toggle ? 
+      <Grid column={{ base: 1, md: 1}} overflowX={{base: 'scroll', md: 'unset'}} gap={4} mt={14}>
+        <GridItem>
+            <Box bg={ !show && bg} p={6} borderRadius={'20px'} minH={'200px'} boxShadow={ !show && '0 0 10px rgba(0, 0, 0, 0.1)'}>
+                <Flex alignItems={'center'} mb={3} justifyContent={'space-between'}>
 
-        <TabPanels>
-          <TabPanel>
-            { toggle ? 
-            <Grid column={{ base: 1, md: 1}} overflowX={{base: 'scroll', md: 'unset'}} gap={4} mt={8}>
-              <GridItem>
-                  <Box bg={ !show && bg} p={6} borderRadius={'20px'} minH={'200px'} boxShadow={ !show && '0 0 10px rgba(0, 0, 0, 0.1)'}>
-                      <Flex alignItems={'center'} mb={3} justifyContent={'space-between'}>
+                  <Flex alignItems={'center'} justifyContent={'center'} onClick={()=>setShow(false)} gap={6}>
+                      { show && <Icon color={vert} as={FiArrowLeft} fontSize={20}  />}
+                      <Text fontSize={'xl'} color={vert} fontWeight={600}>{show ? 'Back' : ' 18'} </Text>
+                  </Flex>
+                  
+                  <Flex gap={3} alignItems={'center'}>
+                    { !show && <> 
+                      <Icon fontSize={'16px'} as={FiSearch}/>
+                      <Button colorScheme={'green'} bg={vert} color={'white'} rounded={'full'} onClick={()=>setToggle(false)}><FiPlus/> Ajouter</Button>
+                    </>}
 
-                        <Flex alignItems={'center'} justifyContent={'center'} gap={6}>
-                            { show && <IconButton colorScheme='blue' icon={<FiChevronLeft/>} onClick={()=>setShow(false)} pr={1} rounded={'full'} fontSize={'2xl'}></IconButton>}
-                            <Text fontSize={'xl'} color={color} fontWeight={600}>{show ? 'Student Details' : 'All Teachers'} </Text>
-                        </Flex>
-                        
-                        <Flex gap={3} alignItems={'center'}>
-                          { !show && <> 
-                            <Icon fontSize={'16px'} as={FiSearch}/>
-                            <Button colorScheme={Maincolor} rounded={'full'} onClick={()=>setToggle(false)}><FiPlus/> Ajouter</Button>
-                          </>}
+                    { !show ?  <Icon fontSize={'16px'} as={FiPrinter}/> : <Button colorScheme={Maincolor} rounded={'full'}><FiPrinter/> Imprimer</Button>}
+                  </Flex> 
+                </Flex>
 
-                          { !show ?  <Icon fontSize={'16px'} as={FiPrinter}/> : <Button colorScheme={Maincolor} rounded={'full'}><FiPrinter/> Imprimer</Button>}
-                        </Flex> 
-                      </Flex>
-
-                      {
-                        show ? <TeacherDetails data={data[id.index]}/> : <CustomTable data={FormatData} columns={column} isLoading={loading}/>
-                      }
-                      
-                  </Box> 
-              </GridItem>
-            </Grid> : <AddTeacher close={()=>setToggle('false')}/>}
-          </TabPanel>
-
-
-
-
-        </TabPanels>
-          
-      </Tabs>
+                {
+                  show ? <TeacherDetails data={data[id.index]}/> : <CustomTable data={FormatData} columns={column} isLoading={isLoading}/>
+                }
+                
+            </Box> 
+        </GridItem>
+      </Grid> : <AddTeacher close={()=>setToggle('false')}/>}
         
-
-        
-
       <CustomModal 
         isOpen={isOpen} 
         onClose={onClose} 

@@ -1,9 +1,9 @@
-import { Button, Checkbox, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Input, InputGroup, InputRightElement, Stack, Text, useColorModeValue, useToast } from '@chakra-ui/react'
+import { Button, Checkbox, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Input, InputGroup, InputRightElement, Link, Stack, Text, useColorModeValue, useToast } from '@chakra-ui/react'
 import React, { useCallback, useState } from 'react'
-import img from '../../assets/Preparing.jpg'
+import img from '../../assets/images/halloween-7487706_1920.jpg'
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { useLoginMutation } from '../Redux/ApiSlice'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
@@ -45,7 +45,7 @@ const Login = () => {
 const handleSubmit=()=>{
     if(!payload.email){
         setMessage({
-            ...message,
+             ...message,
             email: 'This field is required'
         })
         setValid({
@@ -56,7 +56,7 @@ const handleSubmit=()=>{
     }else if(!payload.password){
         
         setMessage({
-            ...message,
+             ...message,
             password: 'This field is required'
         })
         setValid({
@@ -70,35 +70,44 @@ const handleSubmit=()=>{
         })
         setLoading(true);
     
-    LOG(payload).unwrap()
-    .then(resp =>{
-        setLoading(false);
-        setPayload({
-            email: '',
-            password: ''
-        })
-        localStorage.setItem('userData', JSON.stringify(resp))
-        console.log(resp);
-        setTimeout(navigate, 0, '/')
-    })
-    
-
-    .catch(err=>{
-        setLoading(false);
-        console.log(err);
-        if(err.status === 404){
-            setMessage({...message, email: err.data.message})
-            setValid({password: false, email: true})
-
-        }else if(err.data.message.includes('password')){
-            setMessage({...message, password: err.data.message})
-            setValid({ email: false, password: true})
-        }
-        else{
-            showMessage('error', 'Sorry something went Wrong... Try later', 'Login', 7000, 'botton-riht');
-        }
+ LOG(payload).unwrap()
+ .then(resp =>{ 
+     setLoading(false);
+     setPayload({
+         email: '',
+         password: ''
+     })
+     localStorage.setItem('userData', JSON.stringify(resp))
         
-    })
+     if((resp.roleName !== 'STUDENT') && (resp.roleName !== 'TEACHER')){
+         setTimeout(navigate, 0, '/dash')
+     }else{
+         setTimeout(navigate, 0, '/')
+     }
+ })
+
+ .catch(err=>{
+     setLoading(false);
+     console.log(err);
+     if(err.status === 404){
+         setMessage({...message, email: err?.data?.message})
+         setValid({password: false, email: true})
+
+     }else if(err.status === 403){
+
+         if(err.data.message?.includes('password')){
+             setMessage({...message, password: err?.data?.message})
+             setValid({ email: false, password: true})
+         }else{
+            showMessage('warning', err?.data?.message , 'Login')
+         }
+     }
+     else{
+        showMessage('error', 'Une erreur interne est Survenue dans le serveur' , 'Login')
+        console.log(err);
+     }
+        
+ })
 
     }
 }
@@ -112,8 +121,8 @@ const handleSubmit=()=>{
       width: '100%',
       top: 0,
       bottom: 0,
-      bg: 'blue.400',
-      bgGradient: 'linear-gradient(-135deg, #c850c0, #4158d0)',
+      bg: 'rgba(0, 0, 0, 0.7)',
+      //bgGradient: 'linear-gradient(-135deg, #c850c0, #4158d0)',
       opacity: 0.7,
     }} h={'100vh'} justify={'center'} align={'center'} bg={`url(${img})`} bgSize={'cover'}>
 
@@ -124,7 +133,8 @@ const handleSubmit=()=>{
             
                 <FormControl mt={8} id="email">
                     <InputGroup>
-                        <Input onChange={e=> setPayload({...payload, email: e.target.value})} type="email" placeholder='username or email' _placeholder={{color: 'gray.400'}} bg={'white'} rounded={'4px'} h={'42px'} _focusVisible={{
+                        <Input onChange={e=> setPayload({...payload, email: e.target.value})} bg={useColorModeValue('white', 'gray.600')} type="email" placeholder='username or email' _placeholder={{color: 'gray.400'}} rounded={'4px'} h={'42px'} 
+                        _focusVisible={{
                             bg: useColorModeValue('white', 'gray.600')
                         }}
                          />
@@ -136,7 +146,7 @@ const handleSubmit=()=>{
                 </FormControl>
                 <FormControl mt={2} id="password">
                     <InputGroup>
-                        <Input onChange={e=> setPayload({...payload, password: e.target.value})} type={passwordType ? 'password': 'text'} placeholder='password' bg={'white'} rounded={'4px'} h={'42px'} _placeholder={{color: 'gray.400'}} _focusVisible={{
+                        <Input onChange={e=> setPayload({...payload, password: e.target.value})} type={passwordType ? 'password': 'text'} placeholder='password' bg={useColorModeValue('white', 'gray.600')} rounded={'4px'} h={'42px'} _placeholder={{color: 'gray.400'}} _focusVisible={{
                             bg: useColorModeValue('white', 'gray.600')
                         }}/>
                         <InputRightElement color={'gray.400'} mt={1} onClick={()=>setPasswordType(!passwordType)}>
@@ -152,7 +162,7 @@ const handleSubmit=()=>{
                     mt={2}
                     justify={'space-between'}>
                     <Checkbox color={'white'}>Remember me</Checkbox>
-                    <Text color={'blue.500'}>Forgot password?</Text>
+                    <Link as={Link} onClick={()=>setTimeout( navigate, 0, '/resetPassword')}  color={'blue.500'}>Forgot password?</Link>
                     </Stack>
                     <Button isLoading={loading} onClick={handleSubmit} colorScheme={'blue'} variant={'solid'}>
                     Sign in

@@ -1,8 +1,8 @@
-import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel, Grid, GridItem, Image, Input, InputGroup, InputLeftAddon, Radio, RadioGroup, Select, Skeleton, Stack, Text, useColorModeValue, useToast } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel, Grid, GridItem, Icon, Image, Input, InputGroup, InputLeftAddon, InputRightElement, Radio, RadioGroup, Select, Skeleton, Stack, Text, useColorModeValue, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import bg2 from '../../assets/images/bgstudent.webp' 
 // import profile from '../../assets/images/profile-3.jpg' 
-import { FiGift, FiGitBranch, FiMail, FiPhone } from 'react-icons/fi'
+import { FiEye, FiEyeOff, FiGift, FiGitBranch, FiMail, FiPhone } from 'react-icons/fi'
 import { BiUser} from 'react-icons/bi'
 import { FaUserCircle } from 'react-icons/fa'
 import Upload from '../Custom/Upload'
@@ -10,6 +10,8 @@ import { useAddStudentMutation, useGetSubjectQuery } from '../Redux/ApiSlice'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import cmrFlag from '../../assets/images/Dashboard/cmr flag.png'
+import { useNavigate } from 'react-router-dom'
+import { vert } from '../theme'
 
 const AddStudent = ({ close, cached, onUpdate }) => {
 
@@ -21,7 +23,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
     birthday: '',
     mobile: '',
     email: '',
-    idSubject: '',
+    idSubject: '/',
     password: '',
     rePassword: ''
   })
@@ -33,6 +35,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
   const [picture, setPicture] = useState();
   const [valid, setValid] = useState(true);
   const inputRef = useRef()
+  const navigate = useNavigate()
 
   // ALERTS
   const toast = useToast()
@@ -64,7 +67,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
   useEffect(() => {
     if(isError){
       if(error.status=== 401){
-        //navigate('/login')
+        navigate('/login')
       }
       //console.log(error.error);
       //return showMessage('error',error.message, 'Fetch Task')
@@ -72,7 +75,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
       //console.log(data);
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [isSuccess, isError, error, isLoading, data, showMessage])
+  }, [isSuccess, isError, error, isLoading, data, showMessage, navigate])
 
 
   //UPDATE REQUEST
@@ -98,11 +101,10 @@ const AddStudent = ({ close, cached, onUpdate }) => {
   }
   
 
-  //input phone useffect
+  //Hide/Show password
 
- 
-  
-
+  const [passwordType, setPasswordType] = useState(false)
+  const [passwordType2, setPasswordType2] = useState(false)
 
 
   //Input Validation and POST REQUEST
@@ -304,7 +306,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
             width: '100%',
             top: 0,
             bottom: 0,
-            bgGradient: 'linear-gradient(-135deg, #c850c0, #4158d0)',
+            bgGradient: 'linear-gradient(-135deg, #010101, #60c94c)',
             opacity: 0.7,
             borderTopLeftRadius: '20px',
             borderTopRightRadius:'20px',
@@ -316,25 +318,25 @@ const AddStudent = ({ close, cached, onUpdate }) => {
             <Flex mt={6} px={6} justifyContent={'space-between'}>
               <Box>
                 <FormControl>
-                  <FormLabel gap={2} display={'flex'} alignItems={'center'}><FaUserCircle/> Name</FormLabel>
-                  <Input id='1' onChange={e =>setProfile({...profile, name: e.target.value })} value={profile?.name} type='text' placeholder='Student name' minW={'300px'} rounded={'full'} name='name' ref={inputRef} required/>
-                  { validInput.name && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+                  <FormLabel gap={2} display={'flex'} alignItems={'center'}> <Icon color={vert} as={FaUserCircle} /> Noms</FormLabel>
+                  <Input id='1' onChange={e =>setProfile({...profile, name: e.target.value })} value={profile?.name} type='text' placeholder="noms de l'etudiant" minW={'300px'}  name='name' ref={inputRef} required/>
+                  { validInput.name && <FormHelperText color={'red.400'}> Ce champ est requis! </FormHelperText>}
                 </FormControl>
 
                 <FormControl mt={2}>
-                  <FormLabel gap={2} display={'flex'} alignItems={'center'}><BiUser/> Surname</FormLabel>
-                  <Input type='text' id='2' onChange={e =>setProfile({...profile, surname: e.target.value })} value={profile?.surname} placeholder=' Student Surname' minW={'300px'} name='surname' ref={inputRef} rounded={'full'} required/>
-                  { validInput.surname && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+                  <FormLabel gap={2} display={'flex'} alignItems={'center'}> <Icon color={vert} as={BiUser} /> Prenoms </FormLabel>
+                  <Input type='text' id='2' onChange={e =>setProfile({...profile, surname: e.target.value })} value={profile?.surname} placeholder="Prenoms de l'etudiant" minW={'300px'} name='surname' ref={inputRef}  required/>
+                  { validInput.surname && <FormHelperText color={'red.400'}> Ce champ est requis! </FormHelperText>}
                 </FormControl>
 
                 <FormControl mt={2}>
-                  <FormLabel gap={2} display={'flex'} alignItems={'center'}><FiMail/> Email Adress</FormLabel>
-                  <Input type='email' id='3' onChange={e =>setProfile({...profile, email: e.target.value })} value={profile?.email} disabled={onUpdate} placeholder='sample@gmail.com' name='email' ref={inputRef}  minW={'300px'} rounded={'full'}/>
-                  { validInput.email && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+                  <FormLabel gap={2} display={'flex'} alignItems={'center'}> <Icon color={vert} as={FiMail}/>Courriel ou e-mail</FormLabel>
+                  <Input type='email' id='3' onChange={e =>setProfile({...profile, email: e.target.value })} value={profile?.email} disabled={onUpdate} placeholder='Courriel@gmail.com' name='email' ref={inputRef}  minW={'300px'} />
+                  { validInput.email && <FormHelperText color={'red.400'}> Ce champ est requis! </FormHelperText>}
                 </FormControl>
 
                 <FormControl mt={4} mb={2} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                  <FormLabel gap={2} alignItems={'center'} display={'flex'}>Gender</FormLabel>
+                  <FormLabel gap={2} alignItems={'center'} display={'flex'}>Genre</FormLabel>
                   <RadioGroup defaultValue='1'>
                     <Stack direction='row' justify={'center'} >
                       <Radio value='1' checked>Male</Radio>
@@ -352,14 +354,14 @@ const AddStudent = ({ close, cached, onUpdate }) => {
             <Box px={6}>
 
               <FormControl>
-                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}> <FiGitBranch/> Subject </FormLabel>
-                <Skeleton isLoaded={isSuccess} rounded={'full'}>
+                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}> <Icon color={vert} as={FiGitBranch}/> Filiére </FormLabel>
+                <Skeleton isLoaded={isSuccess} >
                   <Select 
-                  rounded={'full'} 
+                   
                   defaultValue={onUpdate && cached.SubjectId}
                   name='subject' ref={inputRef}
                   id='4'
-                  placeholder='Select subject'
+                  placeholder='Choisir une Filiére'
                   onChange={e=> setProfile({...profile, idSubject: e.target.options[e.target.options.selectedIndex].id})}
                   >
                     {
@@ -368,44 +370,55 @@ const AddStudent = ({ close, cached, onUpdate }) => {
                     
                   </Select>
                 </Skeleton>
-                { validInput.idSubject && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+                { validInput.idSubject && <FormHelperText color={'red.400'}> Ce champ est requis! </FormHelperText>}
               </FormControl>
 
-              <Text textAlign={'center'} mt={5}>Personnal data</Text>
+              <Text textAlign={'center'} mt={5}>Données Personnelles</Text>
 
               <FormControl mt={1}>
-                <FormLabel gap={2} mt={1} display={'flex'}> <FiGift/>Birthday</FormLabel>
-                <Input name='date' id='5' ref={inputRef} type='date' onChange={e =>setProfile({...profile, birthday: e.target.value })} value={dayjs(profile?.birthday).format('YYYY-MM-DD')} minW={'300px'} rounded={'full'}/>
-                { validInput.birthday && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+                <FormLabel gap={2} mt={1} display={'flex'}> <Icon color={vert} as={FiGift}/>Date de naissance</FormLabel>
+                <Input name='date' id='5' ref={inputRef} type='date' onChange={e =>setProfile({...profile, birthday: e.target.value })} value={dayjs(profile?.birthday).format('YYYY-MM-DD')} minW={'300px'} />
+                { validInput.birthday && <FormHelperText color={'red.400'}> Ce champ est requis! </FormHelperText>}
               </FormControl>
 
               <FormControl mt={1}>
-                <FormLabel gap={2} mt={1} display={'flex'}> <FiPhone/>Mobile</FormLabel>
+                <FormLabel gap={2} mt={1} display={'flex'}><Icon color={vert} as={FiPhone}/>Mobile</FormLabel>
                 <InputGroup>
                   <InputLeftAddon bg={'transparent'}>
                     <strong>+237</strong>
                   </InputLeftAddon>
-                  <Input maxLength={9} type='tel' onChange={e =>setProfile({...profile, mobile: e.target.value })} value={profile.mobile} minW={'300px'} rounded={'full'} placeholder='Type your phone number'/>
+                  <Input maxLength={9} type='number' onChange={e =>setProfile({...profile, mobile: e.target.value })} value={profile.mobile} minW={'300px'}  placeholder='Saissir le numéro de téléphone'/>
                 </InputGroup>
-                { validInput.mobile && <FormHelperText color={'red.400'}> Phone number must be 9 digits </FormHelperText>}
+                { validInput.mobile && <FormHelperText color={'red.400'}> le numéro de telephone invalide </FormHelperText>}
               </FormControl>
 
               <FormControl mt={2}>
-                <FormLabel>Password</FormLabel>
-                <Input type='password' id='6' name='password' ref={inputRef}  onChange={e =>setProfile({...profile, password: e.target.value })} disabled={onUpdate} placeholder='set a password' minW={'300px'} rounded={'full'}/>
-                { validInput.password && <FormHelperText color={'red.400'}> Password must be 8 strings at least! </FormHelperText>}
+                <FormLabel>Mot de passe</FormLabel>
+                <InputGroup>
+                  <Input type={passwordType2 ? 'text' : 'password'} id='6' name='password' ref={inputRef}  onChange={e =>setProfile({...profile, password: e.target.value })} disabled={onUpdate} placeholder='Definir un mot de passe' minW={'300px'} />
+                  <InputRightElement onClick={()=>setPasswordType2(!passwordType2)}>
+                    <Icon as={passwordType2 ? FiEyeOff : FiEye} color={vert}/>
+                  </InputRightElement>
+                </InputGroup>
+                { validInput.password && <FormHelperText color={'red.400'}> Le mot de passe doit contenir au moins 8 caractéres </FormHelperText>}
               </FormControl>
 
               <FormControl mt={2}>
-                <FormLabel>Re Password</FormLabel>
-                <Input type='password' name='Repassword' id='7' ref={inputRef} onChange={e =>setProfile({...profile, rePassword: e.target.value })} disabled={onUpdate} placeholder='Confirm Your Password' minW={'300px'} rounded={'full'}/>
-                { validInput.password && <FormHelperText color={'red.400'}> Password doesn't match! </FormHelperText>}
+                <FormLabel>Confirmer le mot de passe</FormLabel>
+                <InputGroup>
+                  <Input type={passwordType ? 'text' : 'password'} name='Repassword' id='7' ref={inputRef} onChange={e =>setProfile({...profile, rePassword: e.target.value })} disabled={onUpdate} placeholder='Confirmer le mot de passe' minW={'300px'} />
+                  <InputRightElement onClick={()=>setPasswordType(!passwordType)}>
+                    <Icon as={passwordType ? FiEyeOff : FiEye} color={vert}/>
+                  </InputRightElement>
+                </InputGroup>
+                { validInput.password && <FormHelperText color={'red.400'}> Les mots de passes ne correpondent pas  </FormHelperText>}
               </FormControl>
 
 
               <ButtonGroup spacing='6' mt={8} justifyContent={'center'} w={"full"}>
-                <Button colorScheme='blue' w={'30%'} rounded={'full'} isLoading={loading} loadingText={'Processing...'} onClick={ !onUpdate ? handleSubmit : handleEdit}>Submit</Button>
-                <Button rounded={'full'} w={'30%'} onClick={close}>Cancel </Button>
+                <Button  w={'30%'} onClick={close}>Cancel </Button>
+                <Button colorScheme='green' bg={vert} w={'30%'}  isLoading={loading} loadingText={'Traitement...'} onClick={ !onUpdate ? handleSubmit : handleEdit}>Envoyer</Button>
+                
               </ButtonGroup>
 
             </Box>

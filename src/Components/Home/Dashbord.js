@@ -1,66 +1,37 @@
-import { Avatar, Box, Button, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Input, SimpleGrid, Skeleton, Table, TableContainer,  Tbody, Td, Text, Th, Thead, Tr,  useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Input, SimpleGrid, Skeleton, Table, TableContainer,  Tag,  TagLabel,  TagLeftIcon,  Tbody, Td, Text, Th, Thead, Tr,  useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CardAnalitic from './Card'
 import { BiSolidDashboard, BiSolidFolderOpen, BiSolidUser, BiSolidWallet} from 'react-icons/bi'
 import { FiChevronDown, FiSearch } from 'react-icons/fi'
 import CustomHeading from '../Dashboard/CustomHeading'
-import { CheckIcon, DeleteIcon, EditIcon,} from '@chakra-ui/icons'
+import { CheckIcon, DeleteIcon, EditIcon, WarningIcon,} from '@chakra-ui/icons'
 import CustomTable from '../Dashboard/CustomTable'
 import image from '../../assets/images/Dashboard/datanotfound.png'
 import { motion } from 'framer-motion'
-import { Maincolor, containerVariant, formatter } from '../theme'
-import { useAddRoleMutation, useDeleteRoleMutation, useGetPaymentQuery, useGetRoleQuery, useGetStudentQuery, useGetTeacherQuery, useGetUserAndRoleQuery, useUpdateRoleMutation } from '../Redux/ApiSlice'
+import { Maincolor, containerVariant, formatter, vert } from '../theme'
+import { useAddRoleMutation, useDeleteRoleMutation, useGetPaymentQuery, useGetRoleQuery, useGetStudentInfoQuery, useGetStudentQuery, useGetTeacherQuery, useGetUserAndRoleQuery, useUpdateRoleMutation } from '../Redux/ApiSlice'
 import { useNavigate } from 'react-router-dom'
 import AddUser from './AddUser'
 import CustomModal from '../Custom/CustomModal'
+import { kFormatter } from '../Custom/formatedNumber'
 
 const Dashbord = () => {
 
     const navigate = useNavigate()
+    const userDataSaved = localStorage.getItem('userData')
     const bColor = useColorModeValue('gray.200', 'gray.700')
     const [onUpdate, setOnUpdate] = useState(false)
-    const [Data, setData] = useState([
-        {
-            name: 'Revenue',
-            value: <><small>XAF</small> 862</> ,
-            currency: true,
-            variant: +3.5 ,
-            color: 'green.400',
-            bg:  'green.100',
-            icon: <BiSolidWallet size={'25px'}/>
-        },
-        {
-            name: 'Teachers',
-            value: 18,
-            variant: +3.5 ,
-            color: 'yellow.400',
-            bg:  'yellow.100',
-            icon: <BiSolidUser size={'25px'}/>
-        },
-        {
-            name: 'Students',
-            value: '1.52K',
-            variant: +3.5 ,
-            color: 'blue.400',
-            bg:  'blue.100',
-            icon: <BiSolidDashboard size={'25px'}/>
-        },
-        {
-            name: 'Employement',
-            value: 45,
-            variant: +3.5 ,
-            color: 'orange.400',
-            bg:  'orange.100',
-            icon: <BiSolidFolderOpen size={'25px'}/>
-        },
-    ])
 
 
     //Dashboard CARD TOTAL PAYMENT
 
+    useEffect(() => {
+      if(!userDataSaved){
+        navigate('/login')
+      }
 
-
-
+    }, [navigate, userDataSaved])
+    
 
 
 
@@ -130,15 +101,24 @@ const Dashbord = () => {
 
     const [ADD] = useAddRoleMutation()
     const [SET] = useUpdateRoleMutation()
-    const Role = useGetRoleQuery(JSON.parse(localStorage.getItem('userData'))?.token)
+    const Role = useGetRoleQuery(JSON.parse(userDataSaved)?.token)
 
     const background = useColorModeValue('white', 'gray.800')
     // const text1 = useColorModeValue('gray.700', 'white')
 
 
+    //Check Role
+
+    useEffect(() => {
+        if(userDataSaved && (JSON.parse(userDataSaved)?.roleName === 'STUDENT' || JSON.parse(userDataSaved)?.roleName === 'TEACHER') ){
+          setTimeout(navigate, 0, '/')
+        }
+      }, [navigate, userDataSaved])
 
 
-    const Payment = useGetPaymentQuery()
+
+
+    const Payment = useGetPaymentQuery(JSON.parse(userDataSaved)?.token)
     
     useEffect(() => {
     if(Payment.isError){
@@ -172,7 +152,7 @@ const Dashbord = () => {
     }, [Teacher.isSuccess, Teacher.isError, Teacher.error, Teacher.isLoading, Teacher.data, navigate, showMessage])
     
 
-    const Student = useGetStudentQuery(JSON.parse(localStorage.getItem('userData'))?.token)
+    const Student = useGetStudentQuery(JSON.parse(userDataSaved)?.token)
     
     useEffect(() => {
     if(Student.isError){
@@ -260,6 +240,25 @@ const Dashbord = () => {
         }
     }, [Role.isSuccess, Role.isError, Role.error, Role.isLoading, Role.data, navigate ])
 
+
+    //Status Payment
+
+    const paymentStatus = useGetStudentInfoQuery()
+
+    useEffect(() => {
+        if(paymentStatus.isError){
+            if(paymentStatus.error.status=== 401){
+                setTimeout(navigate, 0, '/login')
+            }else{
+            //console.log(error.error);
+            //showMessage('error', 'Server has been stopped', 'Fetch Task')
+            }
+        }else if(paymentStatus.isSuccess){
+            //console.log(data);
+            //showMessage('success', `${data.length} items found`, 'Fetch Task')
+        }
+    }, [paymentStatus.isSuccess, paymentStatus.isError, paymentStatus.error, paymentStatus.isLoading,  navigate ])
+
     useEffect(() => {
         if(!payload){
             setBtn(true)
@@ -285,6 +284,65 @@ const Dashbord = () => {
         })
     }
 
+    const columns = React.useMemo(
+        () => [
+          {
+            Header: ' ',
+            columns: [
+              {
+                Header: "Noms",
+                accessor: "name"
+              },
+              {
+                Header: "Filiére",
+                accessor: "subject"
+              },
+              {
+                Header: "School Fees",
+                accessor: "fees"
+              },
+              {
+                Header: "payed",
+                accessor: "payed"
+              },
+              {
+                Header: "statut",
+                accessor: "statut"
+              },
+              
+            ]
+          }
+        ],
+        []
+      );
+
+
+      const formatedData = paymentStatus.isSuccess && paymentStatus.data.map(elt=>{
+        return {
+            key: elt.id,
+            name: (
+                <Flex gap={3}>
+                    <Avatar size={{base: 'sm', md: 'md'}} src={`http://localhost:${process.env.REACT_APP_PORT}/image/${elt.picture}`}/>
+                    <Box>
+                        <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={1} fontWeight={600}>
+                        {elt.name}
+                        </Text>
+                        <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={1}>
+                        {elt.email}
+                        </Text> 
+                    </Box>
+                </Flex>), 
+            subject: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}>{elt.subject} </Text>,   
+            statut: <Tag size={{base: 'sm', md: 'md'}} variant='subtle' colorScheme={ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? 'red' : 'green'}>
+            <TagLeftIcon boxSize='12px' as={ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? WarningIcon : CheckIcon   } />
+            <TagLabel>{ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? `non soldé` : 'soldé'}</TagLabel>
+            </Tag>,
+            fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins semiBold'}> {formatter.format(elt.fees)}</Text>,   
+            payed: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} >{ formatter.format(elt?.payed.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))}</Text>,
+            
+        }
+        
+      })
 
     return (
     <Box as={motion.div}
@@ -292,61 +350,61 @@ const Dashbord = () => {
         initial={'hidden'}
         animate={'visible'}
     >
-        <CustomHeading title={'Dashboard'} prevSection={'Dashboard'} currentSection={'Home'}/>
+        <CustomHeading title={'Dashboard'} prevSection={'Tableu de bord'} currentSection={'Accueil'}/>
 
         <SimpleGrid 
-            mt={8}
+            mt={14}
             columns={{ base: 1, sm: 2,  md: 4 }} 
             spacing={{ base: 5, lg: 8 }}
         >
 
             <MotionBox
-                whileHover={{y: -10, boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'}}
+                whileHover={{y: -10}}
                 variants={cardVariant}
                 animate={'animate'}
-                title={Data[0].name}
                 isLoading={Payment.isSuccess} 
-                percentage={Payment.isSuccess && formatter.format(Payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))} 
-                count={Data[0].variant} 
-                icon={Data[0].icon} 
-                color={Data[0].color} 
-                bg={Data[0].bg}
+                info={Payment.isSuccess && `${ Payment.data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0)} Fcfa`}
+                total={Payment.isSuccess && kFormatter(Payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))} 
+                title='Revenue' 
+                colorOne={'red.400'} 
+                colorTwo={'#FF0080'} 
+                icon='fitness' 
+                label="Montant de la caisse" 
             />
             <MotionBox
-                whileHover={{y: -10, boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'}}
+                whileHover={{y: -10}}
                 variants={cardVariant}
                 animate={'animate'}
-                isLoading = {Teacher.isSuccess}
-                title={Data[1].name} 
-                percentage={Teacher.isSuccess && Teacher.data.length} 
-                count={Data[1].variant} 
-                icon={Data[1].icon} 
-                color={Data[1].color} 
-                bg={Data[1].bg}
+                isLoading = {Student.isSuccess}
+                title='Etudiant' 
+                total={Student.isSuccess && Student.data.length}
+                colorOne={'green.400'} 
+                colorTwo={'green.400'} 
+                icon='rainy' 
+                label="Effectif des etudiants"
             />
             <MotionBox
-                whileHover={{y: -10, boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'}}
+                whileHover={{y: -10}}
                 variants={cardVariant}
                 animate={'animate'}
-                title={Data[2].name}
-                isLoading= {Student.isSuccess} 
-                percentage={Student.isSuccess && Student.data.length} 
-                count={Data[2].variant} 
-                icon={Data[2].icon} 
-                color={Data[2].color} 
-                bg={Data[2].bg}
+                title='Enseignants' 
+                total={Teacher.isSuccess && kFormatter(Teacher.data.length)} 
+                colorOne={'blue.400'} 
+                icon='paw' 
+                label="Effectif des profs"
+                isLoading= {Teacher.isSuccess} 
             />
             <MotionBox
-                whileHover={{y: -10, boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'}}
+                whileHover={{y: -10}}
                 variants={cardVariant}
                 animate={'animate'}
                 isLoading={isSuccess}
-                title={Data[3].name} 
-                percentage={isSuccess && data.length} 
-                count={Data[3].variant} 
-                icon={Data[3].icon} 
-                color={Data[3].color} 
-                bg={Data[3].bg}
+                title='Personel' 
+                total='45.1'  
+                colorOne={'yellow.400'} 
+                colorTwo={'orange.400'} 
+                icon='speedometer' 
+                label="utilisateurs du systéme"
             />
 
         </SimpleGrid>
@@ -359,9 +417,16 @@ const Dashbord = () => {
             
         >
             <GridItem>
-                <Box bg={useColorModeValue('white', 'gray.800')} p={6} borderRadius={'20px'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} minH={'200px'} >
+                <Box 
+                bg={useColorModeValue('white', 'gray.800')} 
+                p={8} 
+                borderRadius={'20px'} 
+                minH={'200px'} 
+                border={'1px solid'}
+                borderColor={useColorModeValue('#efefef', 'gray.800')}
+                >
                     <Flex alignItems={'center'} mb={3} justifyContent={'space-between'}>
-                        <Text fontSize={'xl'} color={useColorModeValue('gray.700','white' )} fontWeight={600}> Recent Request </Text>
+                        <Text fontSize={'xl'} color={useColorModeValue('gray.700','white' )} fontWeight={600}> Scolarité </Text>
                         <Flex gap={3} alignItems={'center'}>
                             <Icon as={FiSearch} fontSize={'16px'}/>
                             <Icon as={FiChevronDown} fontSize={'15px'}/>
@@ -370,7 +435,7 @@ const Dashbord = () => {
                     </Flex>
 
 
-                    <CustomTable columns={[]} data={[]}/>
+                    <CustomTable columns={columns} data={ paymentStatus.isSuccess ? formatedData : [] } isLoading={paymentStatus.isSuccess}/>
 
             
 
@@ -396,7 +461,7 @@ const Dashbord = () => {
             </GridItem>   */}
         </Grid>
 
-        <SimpleGrid  columns={{base: 1, sm: 2, md: 3}} gap={4} mt={8} >
+        {/* <SimpleGrid  columns={{base: 1, sm: 2, md: 3}} gap={4} mt={8} >
             <GridItem as={motion.div} whileHover={{ y: 15}} p={6} rounded={'20px'} _hover={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)' }}   bg={background} gap={8} flexDir={'column'} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
 
                <Text fontSize={'md'} fontWeight={600}>ABOUT EXAM NOTES</Text>
@@ -419,10 +484,10 @@ const Dashbord = () => {
                 <Text fontSize={'md'} textAlign={'center'}>Before Delete items from following session ( <strong> Trainings </strong> ) make sure its no containts important data because these will be lost </Text>
                 <Button colorScheme='red' w={'full'}>Read more</Button>
             </GridItem>
-        </SimpleGrid>
+        </SimpleGrid> */}
 
-
-        <SimpleGrid columns={{base: 1, md: 3, sm: 1}} gap={4} mt={8} >
+        {/* JSON.parse(userDataSaved)?.roleName === 'SUPERADMIN' */}
+        { false && <SimpleGrid columns={{base: 1, md: 3, sm: 1}} gap={4} mt={8} >
             
 
             <GridItem rounded={'20px'} bg={background} p={6}>
@@ -545,7 +610,7 @@ const Dashbord = () => {
 
 
     
-        </SimpleGrid>
+        </SimpleGrid>}
         
         <CustomModal
             isOpen={isOpen}
@@ -557,9 +622,6 @@ const Dashbord = () => {
             isSuccess={Role.isSuccess}
             handler={()=> handleDelete(id.current)}
         />
-
-
-
         
     </Box>
   )

@@ -6,7 +6,8 @@ export const primaryLight = '#56aceb'
 export const primaryDark = '#007dfe' 
 export const background = '#007dfe' 
 export const colorBase = '#56aceb' 
-export const Maincolor =  'blue'
+export const Maincolor =  'green'
+export const vert =  '#60c94c'
 export const rvb = '72 187 120' 
 export const listIcon = [
   "easel-outline", "duplicate-outline", "folder-outline", "laptop-outline", "map-outline", "extension-puzzle-outline",
@@ -41,14 +42,19 @@ export const formatter = new Intl.NumberFormat('FR-es', {
   //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
 });
 
-const theme = extendTheme({
-  fonts: {
-    heading: `'Poppins semiBold', sans-serif`,
-    body: `'Poppins', sans-serif`,
-  },
 
+const config = {
   initialColorMode: 'dark',
   useSystemColorMode: true,
+}
+
+const theme = extendTheme({
+  config,
+  fonts: {
+    heading: `Poppins semiBold, sans-serif`,
+    body: `Poppins, sans-serif`,
+  },
+
 
 })
 

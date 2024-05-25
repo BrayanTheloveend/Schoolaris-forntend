@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Heading } from '@chakra-ui/react'
 import React from 'react'
-import { primaryLight } from '../theme'
+import { primaryLight, vert } from '../theme'
 
 const CustomHeading = ({title, prevSection, currentSection, nextSection}) => {
   return (
@@ -13,11 +13,11 @@ const CustomHeading = ({title, prevSection, currentSection, nextSection}) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink color={ !nextSection && 'blue.400'} fontWeight={500}>{currentSection}</BreadcrumbLink>
+            <BreadcrumbLink color={ !nextSection && vert} fontWeight={500}>{currentSection}</BreadcrumbLink>
           </BreadcrumbItem>
 
           { nextSection && <BreadcrumbItem>
-            <BreadcrumbLink color={'blue.400'} fontWeight={500}>{nextSection}</BreadcrumbLink>
+            <BreadcrumbLink color={vert} fontWeight={500}>{nextSection}</BreadcrumbLink>
           </BreadcrumbItem>}
         </Breadcrumb>
     </>

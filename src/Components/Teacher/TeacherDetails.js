@@ -11,8 +11,10 @@ import image from '../../assets/images/Dashboard/datanotfound.png'
 import dayjs from 'dayjs'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import CustomModal from '../Custom/CustomModal'
-import { useAddTeacherAssignMutation, useDeleteTeacherAssignMutation, useGetSubjectQuery, useGetTeacherAssignQuery, useGetUnitQuery, useUpdateTeacherAssignMutation } from '../Redux/ApiSlice'
+import { useAddTeacherAssignMutation, useDeleteTeacherAssignMutation, useGetSubjectQuery, useGetTeacherAssignQuery, useGetUnitBySubjectQuery, useGetUnitQuery, useUpdateTeacherAssignMutation } from '../Redux/ApiSlice'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { vert } from '../theme'
 
 
 const TeacherDetails = ({ data }) => {
@@ -20,6 +22,7 @@ const TeacherDetails = ({ data }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const openModal = useDisclosure()
   const [count, setCount] = useState(0)
+  const navigate = useNavigate()
   const [modalData, setmodalData] = useState({
     message: '',
     button: '',
@@ -29,7 +32,7 @@ const TeacherDetails = ({ data }) => {
   })
 
   // onUpdateHelper
-
+  const [subId, setSubId] = useState(null)
   const [id, setId] = useState({
     index: 0, current: 0
   })
@@ -86,8 +89,7 @@ const TeacherDetails = ({ data }) => {
   // REDUX DECLARATION
 
   const request =  useGetTeacherAssignQuery(data?.id)
-  const unitLearning = useGetUnitQuery()
-  const subject = useGetSubjectQuery()
+  const subject = useGetSubjectQuery(JSON.parse(localStorage.getItem('userData'))?.token)
   const [ADD] = useAddTeacherAssignMutation()
   const [DEL] = useDeleteTeacherAssignMutation()
   const [UPDATE] = useUpdateTeacherAssignMutation()
@@ -97,18 +99,27 @@ const TeacherDetails = ({ data }) => {
   useEffect(() => {
     if(subject.isError){
       if(subject.error.status=== 401){
-        //navigate('/login')
+        navigate('/login')
       }
       //console.log(error.error);
       //return showMessage('error',error.message, 'Fetch Task')
     }else if(subject.isSuccess){
+      setSubId(subject.data[0].id)
+      setPayload({
+        idUnit: '/',
+        start: 0,
+        end: 0, 
+        idSubject: subject.data[0].id 
+      })
       //console.log(data);
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [subject.isSuccess, subject.isError, subject.error, subject.isLoading, showMessage])
+  }, [subject.isSuccess, subject.isError, subject.error, subject.isLoading, showMessage, subject.data])
+
+
+  const unitLearning = useGetUnitBySubjectQuery(subId)
 
   //GETUNIT
-
   useEffect(() => {
     if(unitLearning.isError){
       if(unitLearning.error.status=== 401){
@@ -118,9 +129,13 @@ const TeacherDetails = ({ data }) => {
       //return showMessage('error',error.message, 'Fetch Task')
     }else if(unitLearning.isSuccess){
       //console.log(data);
+      setPayload({
+        ...payload, 
+        idUnit: unitLearning.data[0]?.id 
+      })
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [unitLearning.isSuccess, unitLearning.isError, unitLearning.error, unitLearning.isLoading, showMessage])
+  }, [unitLearning.isSuccess, unitLearning.isError, unitLearning.error, unitLearning.isLoading, showMessage, unitLearning.data])
 
 
 
@@ -223,7 +238,7 @@ const TeacherDetails = ({ data }) => {
 
 
   return (
-    <Box minH={'350px'} mt={16}
+    <Box minH={'350px'} mt={14}
     as={motion.div}
     initial={{ y: '-100vh' }}
     animate={{ y: 0}}>
@@ -254,7 +269,7 @@ const TeacherDetails = ({ data }) => {
               {data?.email}  
             </Text>
 
-            <Avatar size={'2xl'} mb={2} border={'5px solid'} borderColor={'white'} src={`http://localhost:3000/image2/${data?.picture}`}/>
+            <Avatar size={'2xl'} mb={2} border={'5px solid'} borderColor={'white'} src={`http://localhost:${process.env.REACT_APP_PORT}/image2/${data?.picture}`}/>
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={100} mt={4} justifyContent={'space-between'} alignItems={'center'}>
@@ -263,7 +278,7 @@ const TeacherDetails = ({ data }) => {
             </Text>
 
             <Text fontWeight={600} noOfLines={2} fontSize={'md'} fontFamily={'Poppins light'} color={'white'}>
-              CreatAt: {dayjs(data?.createdAt).format('DD/MM/YYYY')}
+              CreatAt: {dayjs(data?.createdAt).format('DD.MM.YYYY')}
             </Text>
           </Flex>
         </GridItem>
@@ -312,7 +327,7 @@ const TeacherDetails = ({ data }) => {
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'flex-end'} gap={10}>
-              <IconButton rounded={'full'} icon={<EditIcon/>} colorScheme='blue'/>
+              <IconButton rounded={'full'} icon={<EditIcon/>} colorScheme='green' bg={vert}/>
               {/* <Input type='search' w={'full'} borderRadius={'8px'} placeholder='Write a message to Brayan Theloveend'></Input> <IconButton rounded={'full'} icon={<BiSolidSend/>} colorScheme='blue'/> */}
             </ListItem>
           </List>
@@ -324,7 +339,7 @@ const TeacherDetails = ({ data }) => {
         <Flex justify={'space-between'} align={'center'}>
           <Text fontSize={'md'} fontWeight={'500'}>Note</Text>
           <Flex gap={2}>
-            <Button colorScheme='blue' rounded={'full'} onClick={onOpen}><FiPlus/> Ajouter</Button>
+            <Button colorScheme='green' bg={vert} rounded={'full'} onClick={onOpen}><FiPlus/> Ajouter</Button>
           </Flex>
         </Flex>
 
@@ -334,12 +349,12 @@ const TeacherDetails = ({ data }) => {
              <TableCaption> { request.isSuccess && request.data.length !== 0 && 'These is represent Teacher Assignments' }</TableCaption> 
               <Thead>
                 { request.isSuccess && request.data.length !== 0 && <Tr>
-                  <Th>Subject</Th>
+                  <Th>Filiére</Th>
                   { request.isSuccess && request.data.map((item, index)=> 
                     <Th key={index}>
                     <Flex justify={'space-between'} align={'center'}>
 
-                      {item.name} lvl {item.level}
+                      {item.name} niv {item.level}
 
                       <Flex gap={2}>
                         <IconButton 
@@ -379,7 +394,7 @@ const TeacherDetails = ({ data }) => {
                     request.data.map((item, index)=> <Td key={index} isNumeric fontWeight={600} fontSize={'md'}>{item.unit}</Td>) :
                   <Flex flexDir={'column'} align={'center'} justify={'center'}>
                     <Image src={image} maxW={{base: '6em', md: '6em'}} opacity={0.9} /> 
-                    <Heading mt={3} fontSize={'sm'} color={'gray.400'}>No data to display</Heading>
+                    <Heading mt={3} fontSize={'sm'} color={'gray.400'}>Aucune données <br />disponible</Heading>
                   </Flex>
                   } 
                 </Tr> 
@@ -414,20 +429,24 @@ const TeacherDetails = ({ data }) => {
     <Modal isOpen={isOpen} closeOnOverlayClick={false} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-        <ModalHeader>{ onUpdate ? 'Update Note':'Add Student Note'}</ModalHeader>
+        <ModalHeader>{ onUpdate ? ' Mettre a jour le planing':'Ajouter '}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Fill the following fields to ${ onUpdate ? 'Update':'Add'}`} <strong>{data?.name}'s Task</strong></Text>
+          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Remplir les champs suivants pour ${ onUpdate ? 'mettre ajour':'Ajouter'}`} <strong>{data?.name}'s Task</strong></Text>
           
           <FormControl>
-            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}><ion-icon name="file-tray-full-outline"></ion-icon>Subject</FormLabel>
+            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}><ion-icon name="file-tray-full-outline"></ion-icon>Filiére</FormLabel>
             <Skeleton isLoaded={subject.isSuccess} rounded={'full'}>
               <Select 
               disabled={onUpdate}
               value={payload.idSubject}
               name='subject'
-              placeholder={ subject.isSuccess && subject.data.length === 0 ? 'Aucune filiére disponible': 'select Subject'}
-              onChange={e=> setPayload({...payload, idSubject: e.target.options[e.target.options.selectedIndex].id})}
+              placeholder={ subject.isSuccess && subject.data.length === 0 ? 'Aucune filiére disponible': 'Choisir une filiére'}
+              onChange={e=> {
+                setPayload({...payload, 
+                idSubject: e.target.options[e.target.options.selectedIndex].id})
+                setSubId(e.target.options[e.target.options.selectedIndex].id)
+                }}
               >
                 {
                   subject.isSuccess && subject.data.map(item=> <option value={item.id} id={item.id} key={item.id}> {item.name} / {item.level} </option>)
@@ -438,13 +457,13 @@ const TeacherDetails = ({ data }) => {
           </FormControl>
           
           <FormControl>
-            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}><ion-icon name="bandage-outline"></ion-icon> Unit Learning </FormLabel>
+            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}><ion-icon name="bandage-outline"></ion-icon> Unité d'apprentissage </FormLabel>
             <Skeleton isLoaded={unitLearning.isSuccess} rounded={'full'}>
               <Select 
               disabled={onUpdate}
               value={payload.idUnit}
               name='Unit'
-              placeholder={ unitLearning.isSuccess && unitLearning.data.length === 0 ? 'Aucune UA disponible': 'select Unit'}
+              placeholder={ unitLearning.isSuccess && unitLearning.data.length === 0 ? 'Aucune UA disponible' : 'Choisir une UA'}
               onChange={e=> setPayload({...payload, idUnit: e.target.options[e.target.options.selectedIndex].id})}
               >
                 {
@@ -457,12 +476,12 @@ const TeacherDetails = ({ data }) => {
 
           <Flex align={'center'} justify={'space-between'} mt={2} gap={2}>
               <FormControl>
-                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon> Start time</FormLabel>
+                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon>Heure de debut</FormLabel>
                 <Input type='number' defaultValue={0} onChange={e =>setPayload({...payload, start: e.target.value })} value={payload.start}/>
               </FormControl>
 
               <FormControl>
-                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon> End time</FormLabel>
+                <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon>heure de fin</FormLabel>
                 <Input type='number' defaultValue={0} onChange={e =>setPayload({...payload, end: e.target.value })} value={payload.end}/>
               </FormControl>
             </Flex>

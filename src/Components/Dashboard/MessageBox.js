@@ -2,6 +2,7 @@ import { Box, Text, useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
 import Message from './Message'
 import { motion } from 'framer-motion'
+import { vert } from '../theme'
 
 const MessageBox = ({open}) => {
 
@@ -41,7 +42,7 @@ const MessageBox = ({open}) => {
             <Text as={'span'}  color={'gray.500'} fontSize={'14px'}>
                 Messages
             </Text>
-            <Text as={'span'} h={6} w={6} rounded={'full'} bg={'blue.400'}  color={'white'} display={'flex'} justifyContent={'center'} alignItems={'center'} fontSize={'12px'} fontWeight={'500'}>
+            <Text as={'span'} h={6} w={6} rounded={'full'} bg={vert}  color={'white'} display={'flex'} justifyContent={'center'} alignItems={'center'} fontSize={'12px'} fontWeight={'500'}>
                 {samples.length}
             </Text>
             </Box>

@@ -1,7 +1,37 @@
-ion-icon{
-    color: #56ace5 ;
-}
+
 
 html{
     scroll-behavior: smooth;
 }
+.TitleMark{
+  font-family: 'Montserrat SemiBold';
+  padding-bottom: 15px;
+  position: relative;
+  margin-bottom: 30px
+}
+
+  .TitleMark::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    display: block;
+    width: 120px;
+    height: 1px;
+    background: #ddd;
+    bottom: 1px;
+    left: calc(50% - 60px);
+  }
+  
+  .TitleMark::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #56aceb;
+    bottom: 0;
+    left: calc(50% - 20px);
+
+    color: #56aceb;
+  }

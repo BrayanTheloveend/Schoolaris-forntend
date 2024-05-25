@@ -8,7 +8,7 @@ import CustomTable from '../Dashboard/CustomTable'
 import { useDeleteSubjectMutation, useGetSubjectQuery } from '../Redux/ApiSlice'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
-import { Maincolor, containerVariant, formatter } from '../theme'
+import { Maincolor, containerVariant, formatter, vert } from '../theme'
 import { listIcon } from '../theme'
 import { useNavigate } from 'react-router-dom'
 
@@ -47,7 +47,25 @@ const Training = () => {
     isLoading
   } = useGetSubjectQuery(JSON.parse(localStorage.getItem('userData'))?.token)
 
-  //const [ADD] = useAddStudentMutation()
+
+  const [isChecked, setIsChecked] = useState(false)
+  
+  const [ Data, setData ] = useState([])
+
+  const handleChange= (e)=>{
+      const { name, checked } = e.target
+
+      if(name === 'allSelected'){
+        setIsChecked(checked)
+        let tempData =  Data.map(item=> { return {...item, isChecked: checked}})
+        setData(tempData)
+          
+      }else{
+        setIsChecked(checked)
+        let tempData =  Data.map(item=> item.id === parseInt(name) ?  {...item, isChecked: checked} : item)
+        setData(tempData)
+      }
+  }
 
 //GETSTUDENTS
 
@@ -63,6 +81,7 @@ const Training = () => {
       
     }else if(isSuccess){
       console.log(data);
+      setData(data)
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
   }, [isSuccess, isError, error, isLoading, data, showMessage, navigate])
@@ -94,6 +113,10 @@ const Training = () => {
       {
         Header: ' ',
         columns: [
+          {
+            Header: " ",
+            accessor: "checkbox"
+          },
           {
             Header: "Noms",
             accessor: "name"
@@ -128,19 +151,17 @@ const Training = () => {
 //Format data
 
 const FormatData = isSuccess ?
-data.map(elt=>{
+Data.map(elt=>{
  return(
    {
      key: elt.id,
-     name: (
-        <Flex gap={3} align={'center'}>
-          <ion-icon name={`${listIcon[Math.floor(Math.random() * (listIcon.length))]}`}></ion-icon>
-          <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
-            {elt.name}
-          </Text>
-        </Flex>), 
+     checkbox: <input className="form-check-input" type="checkbox" onClick={handleChange} name={elt.id} checked={elt?.isChecked || false} id="flexCheckDefault" />,
+     name: 
+        <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
+          {elt.name}
+        </Text>, 
       code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}> # {elt.sigle} </Text>,   
-      fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={'#56ace5'} fontFamily= {'Poppins semiBold'}> {formatter.format(elt.fees)}</Text>,   
+      fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} fontFamily= {'Poppins semiBold'}> {formatter.format(elt.fees)}</Text>,   
       label: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1}  color={textcolor}>{elt.description}</Text>,
       level: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontFamily={'Poppins SemiBold'} color={textcolor}>{elt.level}</Text>,
       options:  
@@ -180,7 +201,7 @@ data.map(elt=>{
       initial={'hidden'}
       animate={'visible'}
     >
-      <CustomHeading title={'Manage Trainings'} prevSection={'Subjects'} currentSection={ toogle ? 'Add Subject':  'List of Trainings'} nextSection={null}/>
+      <CustomHeading title={'Specialitées'} prevSection={'Filiére'} currentSection={ toogle ? 'Add Subject':  'Listes des filiéres'} nextSection={null}/>
 
       {
         toogle ?
@@ -193,33 +214,53 @@ data.map(elt=>{
         >
           <GridItem>
               <Box bg={ !toogle && bg} p={6} borderRadius={'20px'} minH={'200px'} boxShadow={ !toogle && '0 0 10px rgba(0, 0, 0, 0.1)'}>
-                  <Flex alignItems={'center'} mb={3} justifyContent={'space-between'}>
+                <Flex mb={3} justifyContent={'space-between'}>
 
-                      <Flex alignItems={'center'} justifyContent={'center'} gap={6}>
-                          { toogle && <IconButton colorScheme='blue' icon={<FiChevronLeft/>} onClick={()=>setToogle(false)} pr={1} rounded={'full'} fontSize={'2xl'}></IconButton>}
-                          <Flex gap={2} align={'center'}>
-                            <Text fontSize={'xl'} color={text1} fontWeight={600}>All Trainings</Text>
-                          </Flex>
+                  <Box display={'flex'} flexDir={'column'} gap={3}> 
+                    <Flex gap={1} align={'center'}>
+                      <Icon 
+                      color={isChecked ? 'red.400' : 'gray.500'}
+                      // color={isChecked ? 'red.400' : 'gray.500'} 
+                      as={DeleteIcon}/>
+                      <Text 
+                        title='supprimer les elements selectionnés' 
+                        mx={2} 
+                        color={ isChecked  ? 'red.400' : 'gray.500'}
+                        fontWeight={600}
+                        cursor={'pointer'}>
+                        Delete ({Data.filter(item => item?.isChecked === true ).length })
+                      </Text>
+                    </Flex>
+           
+
+                    
+                      <Flex gap={2}>
+                        <input type="checkbox"  name="allSelected" onChange={handleChange} checked={Data.filter(item => item?.isChecked !== true ).length < 1}   />
+                        <Text fontSize={{base:'sm', md: 'md'}} >{'Tout selectioner'}</Text>
                       </Flex>
+                    
+                  </Box>
                       
-                      <Flex gap={3} alignItems={'center'}>
-                          
-                          
-                          { !toogle && <> 
-                            <Icon as={FiFilter}/>
-                            <Icon fontSize={'16px'} as={FiSearch}/>
-                            <Button colorScheme={Maincolor} rounded={'full'} 
-                            onClick={()=>{
-                              setOnUpdate(false)
-                              setToogle(true)}
-                            }><FiPlus/> Ajouter</Button>
-                          </>}
+                    <Flex gap={3} alignItems={'center'}>
+                      
+                      { !toogle && <> 
+                        <Icon as={FiFilter}/>
+                        <Icon fontSize={'16px'} as={FiSearch}/>
+                        <Button colorScheme={'green'} 
+                        bg={vert}
+                        rounded={'full'}
+                        color={'white'}
+                        onClick={()=>{
+                          setOnUpdate(false)
+                          setToogle(true)}
+                        }><FiPlus/> Ajouter</Button>
+                      </>}
 
-                          { !toogle?  <Icon fontSize={'16px'} as={FiPrinter}/> : <Button colorScheme={Maincolor} rounded={'full'}><FiPrinter/> Imprimer</Button>}
-                          
-                      </Flex> 
+                      { !toogle?  <Icon fontSize={'16px'} as={FiPrinter}/> : <Button colorScheme={'green'} rounded={'full'}><FiPrinter/> Imprimer</Button>}
+                        
+                    </Flex> 
                   </Flex>
-                    <CustomTable data={FormatData} columns={column} isLoading={isLoading}/>
+                  <CustomTable data={FormatData} columns={column} isLoading={isLoading}/>
               </Box> 
           </GridItem>
       </Grid>
@@ -229,17 +270,17 @@ data.map(elt=>{
       <Modal isOpen={isOpen} onClose={onClose} isCentered >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader> Delete Training</ModalHeader>
+            <ModalHeader> Suppression</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Text noOfLines={3} fontSize={'md'}>Are you sure to delete definitively <strong>{isSuccess && `${data[id.index]?.name} Niveau ${ isSuccess && data[id?.index]?.level}`}  </strong> ?</Text>
+              <Text noOfLines={3} fontSize={'md'}>Voulez-vous supprimé defitivement <strong>{isSuccess && `${data[id.index]?.name} Niveau ${ isSuccess && data[id?.index]?.level}`}  </strong> ?</Text>
             </ModalBody>
 
             <ModalFooter>
               <Button rounded={'md'} colorScheme='blue' mr={3} onClick={onClose}>
-                Cancel
+                Annuler
               </Button>
-              <Button variant='outline' isLoading={loading} rounded={'md'} colorScheme='red' onClick={()=>handleClick(id.current)} >Delete</Button>
+              <Button variant='outline' isLoading={loading} rounded={'md'} colorScheme='red' onClick={()=>handleClick(id.current)}>Supprimer</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

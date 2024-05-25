@@ -1,8 +1,8 @@
-import { Avatar, Box, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, VStack, useColorMode, useColorModeValue } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import { Avatar, Box, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuItem, MenuList, Text, VStack, useColorMode, useColorModeValue } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
 import { FiChevronDown, FiChevronLeft, FiLogOut, FiMenu } from 'react-icons/fi'
-import { primaryDark, primaryLight } from '../theme'
-import { FaBell, FaEnvelope } from 'react-icons/fa'
+import { primaryDark, primaryLight, vert } from '../theme'
+import { FaEnvelope } from 'react-icons/fa'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { BiSolidUser } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
@@ -11,6 +11,8 @@ const Navbar = ({ onOpen, openMessage }) => {
 
   const { colorMode, toggleColorMode } = useColorMode()
   const navigate = useNavigate()
+  const userDataSaved = localStorage.getItem('userData')
+
   const menuBorderColor = useColorModeValue('gray.200', 'gray.900')
   const textcolor = useColorModeValue('gray.600','gray.400')
 
@@ -26,19 +28,19 @@ const Navbar = ({ onOpen, openMessage }) => {
       }
     })
   }, [])
-  
+
     
-  
     return (
       <Flex
         ml={{ base: 0, md: 0 }}
-        position={'fixed'}
         px={{ base: 4, md: 4 }}
         h={{base: '4.8em' , md: '5.6em'}}
+        alignItems="center"
+        position={'fixed'}
         w={"100%"}
         zIndex={99}
-        alignItems="center"
-        backdropFilter={ active && 'blur(20px)'} boxShadow={ active ? '0 0 12px rgba(0, 0, 0, 0.5)' : 'none'}
+        backdropFilter={ active && 'blur(20px)'} 
+        boxShadow={ active ? '0 0 12px rgba(0, 0, 0, 0.5)' : 'none'}
         bg={active ? 'rgba(255, 255, 255, .2)' : bg}
         borderBottomWidth="1px"
         borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
@@ -61,8 +63,6 @@ const Navbar = ({ onOpen, openMessage }) => {
         </Text>
   
         <HStack spacing={{ base: '0', md: '6' }}>
-
-          <Icon as={FiChevronLeft} display={{ base: 'none',  md: 'flex'}} position={'absolute'} left={80} ml={4} color={primaryLight} fontSize={'22px'}/>
   
           <Icon
             _hover={{
@@ -78,7 +78,7 @@ const Navbar = ({ onOpen, openMessage }) => {
             as={FaEnvelope} />
           <IconButton
             onClick={toggleColorMode}
-            icon={ colorMode === 'light' ?  <MoonIcon color={primaryLight} w={4} h={4} /> : <SunIcon color={primaryLight} w={5} h={5} />}
+            icon={ colorMode === 'light' ?  <MoonIcon color={vert} w={4} h={4} /> : <SunIcon color={vert} w={5} h={5} />}
             variant={'ghost'} />
   
           <Flex alignItems={'center'}>
@@ -88,7 +88,7 @@ const Navbar = ({ onOpen, openMessage }) => {
                 <Avatar
                 size={'sm'}
                 src={
-                  localStorage.getItem('userData') ? `http://localhost:3000/image/${ JSON.parse(localStorage.getItem('userData'))?.picture }` : 'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+                  userDataSaved ? `http://localhost:${process.env.REACT_APP_PORT}/image/${ JSON.parse(userDataSaved)?.picture }` : 'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
                 }
                 />
                 <VStack
@@ -96,9 +96,9 @@ const Navbar = ({ onOpen, openMessage }) => {
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                <Text fontSize="sm" color={textcolor}>{ JSON.parse(localStorage.getItem('userData'))?.name }</Text>
-                <Text fontSize="xs" color={textcolor}>
-                { JSON.parse(localStorage.getItem('userData'))?.email }
+                <Text fontSize="md" fontWeight={600} color={textcolor}>{ JSON.parse(userDataSaved)?.name }</Text>
+                <Text fontSize="xs" color={textcolor} >
+                { JSON.parse(userDataSaved)?.email }
                 </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
