@@ -312,7 +312,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
             borderTopRightRadius:'20px',
           }}
           >
-           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins semibold'} textAlign={'center'} color={'white'}>Registration</Text> 
+           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Registration</Text> 
           </Flex>
 
             <Flex mt={6} px={6} justifyContent={'space-between'}>

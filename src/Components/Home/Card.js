@@ -8,8 +8,7 @@ import { Box, Flex, Grid, GridItem, Skeleton, Text, useColorModeValue } from "@c
 const CardAnalitic = forwardRef((props, ref)=> {
   return (
     <GridItem 
-    px={6}
-    title={props.info} 
+    px={6} 
     py={6}
     ref={ref}
     overflow={'hidden'} 
@@ -24,7 +23,7 @@ const CardAnalitic = forwardRef((props, ref)=> {
     gap={{md: 3, base: 6}}
 
     {...props.style}>
-      <Flex flexDir={'column'} color={props.colorOne} >
+      <Flex flexDir={'column'} color={props.colorOne} title={props.info}>
           <Skeleton isLoaded={props.isLoading}>
             <Text fontWeight={600}  fontSize={'sm'} color={props.colorOne}>{props.total}</Text>
           </Skeleton>

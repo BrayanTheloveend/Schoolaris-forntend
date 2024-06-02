@@ -190,7 +190,7 @@ const AddTraining = ({close, onUpdate, cached}) => {
             borderTopRightRadius:'20px',
           }}
           >
-           <Text zIndex={10} fontSize={'xl'} fontWeight={600} fontFamily={'Poppins semibold'} textAlign={'center'} color={'white'}>Nouvelle formation</Text> 
+           <Text zIndex={10} fontSize={'xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Nouvelle formation</Text> 
         </Flex>
 
           <Box p={6}>

@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel,
 import React, { useCallback, useRef, useState } from 'react'
 import bg2 from '../../assets/images/bgteacher.webp' 
 //import profile from '../../assets/images/profile-4.jpg' 
-import { FiGift, FiMail, FiPhone } from 'react-icons/fi'
+import { FiFolder, FiGift, FiMail, FiPhone } from 'react-icons/fi'
 import { BiUser } from 'react-icons/bi'
 import { FaUserCircle } from 'react-icons/fa'
 import Upload from '../Custom/Upload'
@@ -10,6 +10,8 @@ import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import { useAddTeacherMutation } from '../Redux/ApiSlice'
 import { vert } from '../theme'
+import SimpleUpload from '../Custom/SimpleUpload'
+
 
 
 const AddTeacher = ({ close, onUpdate }) => {
@@ -26,7 +28,7 @@ const AddTeacher = ({ close, onUpdate }) => {
 
   //Upload
   const [picture, setPicture] = useState(null);
-  //const [CV, setCV] = useState('');
+  const [CV, setCV] = useState('');
   
 
   //LOADER STATE
@@ -72,6 +74,7 @@ const AddTeacher = ({ close, onUpdate }) => {
   })
 
   const [valid, setValid] = useState(true);
+  const [valid2, setValid2] = useState(true);
 
   const handleSubmit = (e)=>{
     e.preventDefault()
@@ -84,7 +87,7 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: false,
-        rePassword: false
+        rePassword: false,
       })
       window.scrollTo(0, 0)
     }else if(!profile.surname){
@@ -95,7 +98,7 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: false,
-        rePassword: false
+        rePassword: false,
       })
       window.scrollTo(0, 0)
     }else if(!profile.birthday){
@@ -106,8 +109,19 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: false,
-        rePassword: false
+        rePassword: false,
       })
+    }else if(!CV){
+      setValidInput({ 
+        name: false,
+        surname: false,
+        birthday: false,
+        mobile: false,
+        email: false,
+        password: false,
+        rePassword: false,
+      })
+      setValid2(false)
     }else if(profile.mobile.length !== 9 ){
       setValidInput({ 
         name: false,
@@ -116,7 +130,7 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: true,
         email: false,
         password: false,
-        rePassword: false
+        rePassword: false,
       })
     }else if(!profile.email){
       setValidInput({ 
@@ -126,7 +140,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: true,
         password: false,
-        rePassword: false
+        rePassword: false,
+
       })
     }else if(profile.password.length < 8 ){
       setValidInput({ 
@@ -136,7 +151,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: true,
-        rePassword: false
+        rePassword: false,
+
       })
     }else if( profile.password !== profile.rePassword){
       setValidInput({ 
@@ -146,7 +162,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: false,
-        rePassword: true
+        rePassword: true,
+
       })
     }else if(!picture){
       setValidInput({ 
@@ -156,7 +173,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         mobile: false,
         email: false,
         password: false,
-        rePassword: false
+        rePassword: false,
+
       })
       window.scrollTo(0, 0)
       setValid(false)
@@ -179,7 +197,12 @@ const AddTeacher = ({ close, onUpdate }) => {
 
       setLoading(true);
       const formData = new FormData();
-      let payload = {...profile, file: picture };
+      let payload = {...profile};
+      let payloadFile = {picture: picture, cv: CV};
+
+      for ( let file in payloadFile ) {
+        formData.append('file', payloadFile[file]);
+      }
 
       for ( let key in payload ) {
         formData.append(key, payload[key]);
@@ -248,7 +271,7 @@ const AddTeacher = ({ close, onUpdate }) => {
             borderTopRightRadius:'20px',
           }}
           >
-           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins semibold'} textAlign={'center'} color={'white'}>Registration</Text> 
+           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Registration</Text> 
           </Flex>
 
             <Flex mt={6} px={6} justifyContent={'space-between'}>
@@ -303,20 +326,11 @@ const AddTeacher = ({ close, onUpdate }) => {
                 { validInput.mobile && <FormHelperText color={'red.400'}> Phone number must be 9 digits </FormHelperText>}
               </FormControl>
               
-              {/* <FormControl>
+              <FormControl>
                 <FormLabel alignItems={'center'}  gap={2} mt={2} display={'flex'}> <FiFolder/> Curriculum Vitae (cv) </FormLabel>
-                <Input
-                  pt={1}
-                  
-                  type="file"
-                  onChange={e=> {
-                    setCV(new Fichier(e.target.files[0], e.target.files[0]?.name.split('.').pop()).file)
-                  }}
-                  border={'none'}
-                  outline={'none'}
-                /> 
-                { valid2 && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
-              </FormControl> */}
+                <SimpleUpload handleChange={setCV} valid={valid2} setValid={setValid2} /> 
+                { !valid2 && <FormHelperText color={'red.400'}> This field is required! </FormHelperText>}
+              </FormControl>
 
               <FormControl mt={2}>
                 <FormLabel>Password</FormLabel>

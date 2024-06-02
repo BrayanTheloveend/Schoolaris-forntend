@@ -6,7 +6,7 @@ import { primaryLight, vert } from '../theme'
 const CustomHeading = ({title, prevSection, currentSection, nextSection}) => {
   return (
     <>
-        <Heading my={5} fontSize={'3xl'} id='triggerNav'>{title}</Heading>
+        <Heading my={5} fontFamily={'Poppins'} fontWeight={600} fontSize={'3xl'} id='triggerNav'>{title}</Heading>
         <Breadcrumb separator={<ChevronRightIcon color='gray.500' />}>
           <BreadcrumbItem>
             <BreadcrumbLink fontWeight={500}>{prevSection}</BreadcrumbLink>

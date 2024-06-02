@@ -3,8 +3,8 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 
 export const ApiSlice = createApi({
     reducerPath: 'Api',
-    tagTypes: ['Student', 'Subject', 'Unit', 'Teacher', 'Note', 'Assign', 'Payment', 'Admin', 'Role'],
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3001/api',
+    tagTypes: ['Student', 'Subject', 'Unit', 'Teacher', 'Note', 'Assign', 'Payment', 'Admin', 'Role', 'Lesson', 'Like'],
+    baseQuery: fetchBaseQuery({baseUrl: `http://localhost:${process.env.REACT_APP_PORT}/api`,
 
     //     prepareHeaders: (headers, {getState})=>{
     //      //const {article: {token}} = getState();
@@ -127,6 +127,10 @@ export const ApiSlice = createApi({
             query: id => `/Unit/GetUnitBySubject/${id}`,
         }),
 
+        getUnitById: builder.query({
+            query: id => `/Unit/GetUnitById/${id}`,
+        }),
+
         addUnit: builder.mutation({
             query: payload => ({ 
                 url: `/Unit/AddUnit/`,
@@ -161,6 +165,13 @@ export const ApiSlice = createApi({
             providesTags: ['Teacher']
         }),
 
+        getTeacherById: builder.query({
+            query: id => ({ 
+                url: `/Teacher/GetTeacherById/${id}`,
+                method: 'GET',
+            }),
+        }),
+
         addTeacher: builder.mutation({
             query: payload => ({ 
                 url: `/Teacher/AddTeacher/`,
@@ -186,6 +197,8 @@ export const ApiSlice = createApi({
             invalidatesTags: ['Teacher']
         }),
 
+    
+
 
         //CRUD ASSIGN
 
@@ -194,8 +207,12 @@ export const ApiSlice = createApi({
                 url: `/AssocUnit/GetTeacherAssign/${id}`,
                 method: 'GET',
             }),
-
             providesTags: ['Assign']
+        }),
+
+        getTeacherByUnitId: builder.query({
+            query: id=> `/AssocUnit/GetTeacherByIdUnit/${id}`,
+            invalidatesTags: ['Assign']
         }),
 
         AddTeacherAssign: builder.mutation({
@@ -400,6 +417,45 @@ export const ApiSlice = createApi({
         }),
 
 
+        //Lesson 
+
+        GetLessonByUnitId: builder.query({
+            query: id=> `/Lesson/GetLessonByUnitId/${id}`,
+            providesTags: ['Lesson']
+        }),
+
+        AddLesson: builder.mutation({
+            query: payload => ({ 
+                url: `/Lesson/AddLesson`,
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['Lesson']
+        }),
+
+        DeleteLesson: builder.mutation({
+            query: id => ({ 
+                url: `/Lesson/DeleteLesson/${id}`,
+                method: 'GET',
+            }),
+            invalidatesTags: ['Lesson']
+        }),
+
+
+    //LIKES
+
+
+    GetLikeByLessonId: builder.query({
+        query: id=> `/Lesson/GetLike/${id}`,
+        providesTags: ['Like']
+    }),
+
+
+
+
+
+
+
 
 
         
@@ -422,6 +478,7 @@ export const {
     useAddSubjectMutation,
     useUpdateSubjectMutation,
     useGetUnitQuery,
+    useGetUnitByIdQuery,
     useAddUnitMutation,
     useDeleteUnitMutation,
     useUpdateUnitMutation,
@@ -454,7 +511,13 @@ export const {
     useDeleteRoleMutation,
     useUpdateRoleMutation,
     useGetStudentInfoQuery,
-    usePrintStudentProfileMutation
+    usePrintStudentProfileMutation,
+    useAddLessonMutation,
+    useGetLessonByUnitIdQuery,
+    useGetTeacherByUnitIdQuery,
+    useGetTeacherByIdQuery,
+    useGetLikeByLessonIdQuery,
+    useDeleteLessonMutation
     
 
 

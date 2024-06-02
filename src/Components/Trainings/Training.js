@@ -155,15 +155,15 @@ Data.map(elt=>{
  return(
    {
      key: elt.id,
-     checkbox: <input className="form-check-input" type="checkbox" onClick={handleChange} name={elt.id} checked={elt?.isChecked || false} id="flexCheckDefault" />,
+     checkbox: <input className="form-check-input" type="checkbox" onChange={handleChange} name={elt.id} checked={elt?.isChecked || false} id="flexCheckDefault" />,
      name: 
         <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
           {elt.name}
         </Text>, 
-      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}> # {elt.sigle} </Text>,   
-      fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} fontFamily= {'Poppins semiBold'}> {formatter.format(elt.fees)}</Text>,   
+      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> # {elt.sigle} </Text>,   
+      fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} > {formatter.format(elt.fees)}</Text>,   
       label: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1}  color={textcolor}>{elt.description}</Text>,
-      level: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontFamily={'Poppins SemiBold'} color={textcolor}>{elt.level}</Text>,
+      level: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} color={textcolor}>{elt.level}</Text>,
       options:  
       <Flex gap={2}>
         {/* <IconButton 

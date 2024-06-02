@@ -190,8 +190,8 @@ const Teacher = () => {
             </Text> 
           </Box>
         </Flex>), 
-        email: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}> {elt.email} </Text>,   
-        mobile: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontFamily={'Poppins SemiBold'} color={textcolor}> +237 {elt.mobile}</Text>,
+        email: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> {elt.email} </Text>,   
+        mobile: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} color={textcolor}> +237 {elt.mobile}</Text>,
         statut: <Tag size={{base: 'sm', md: 'md'}} variant='subtle' colorScheme={ elt?.statut === 0 ? 'yellow' : 'green'}>
           <TagLeftIcon boxSize='12px' as={elt?.status=== 0 ? WarningIcon : CheckIcon   } />
           <TagLabel>{ elt?.statut === 0 ? `Awaiting` : 'Activated'}</TagLabel>
@@ -246,7 +246,7 @@ const Teacher = () => {
 
                   <Flex alignItems={'center'} justifyContent={'center'} onClick={()=>setShow(false)} gap={6}>
                       { show && <Icon color={vert} as={FiArrowLeft} fontSize={20}  />}
-                      <Text fontSize={'xl'} color={vert} fontWeight={600}>{show ? 'Back' : ' 18'} </Text>
+                      <Text fontSize={'xl'} color={vert} fontWeight={600}>{show ? 'Back' : isSuccess ? data.length : 'wait'} </Text>
                   </Flex>
                   
                   <Flex gap={3} alignItems={'center'}>

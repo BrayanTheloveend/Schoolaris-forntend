@@ -247,7 +247,7 @@ const TeacherDetails = ({ data }) => {
         templateRows='repeat(2, 1fr)'
         templateColumns='repeat(4, 1fr)'
       >
-        <GridItem pos={'relative'} colSpan={4} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
+        <GridItem pos={'relative'} bgSize={'cover'} bgRepeat={'no-repeat'} colSpan={4} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
           position: 'absolute',
           background: 'rgba(0, 0, 0, 0.30)',
           top: 0,
@@ -273,11 +273,11 @@ const TeacherDetails = ({ data }) => {
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={100} mt={4} justifyContent={'space-between'} alignItems={'center'}>
-            <Text fontWeight={600} fontFamily={'Poppins light'} noOfLines={1} fontSize={'md'} color={'white'}>
+            <Text fontWeight={600} noOfLines={1} fontSize={'md'} color={'white'}>
               ID #{data?.id }
             </Text>
 
-            <Text fontWeight={600} noOfLines={2} fontSize={'md'} fontFamily={'Poppins light'} color={'white'}>
+            <Text fontWeight={600} noOfLines={2} fontSize={'md'} color={'white'}>
               CreatAt: {dayjs(data?.createdAt).format('DD.MM.YYYY')}
             </Text>
           </Flex>
@@ -290,19 +290,19 @@ const TeacherDetails = ({ data }) => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> <FiChevronRight/>  <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Full Name</Text></Flex> <Text>{`${data?.name} ${data?.surname}`}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> <FiChevronRight/>  <Text fontWeight={500} color={'gray.600'}>Full Name</Text></Flex> <Text>{`${data?.name} ${data?.surname}`}</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Birthday </Text></Flex> <Text>{ dayjs(data.birthday).format('DD/MM/YYYY')}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Birthday </Text></Flex> <Text>{ dayjs(data.birthday).format('DD/MM/YYYY')}</Text>
             </ListItem>
             
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Mobile </Text></Flex> <Text>+237 {data?.mobile}</Text> 
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Mobile </Text></Flex> <Text>+237 {data?.mobile}</Text> 
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Account number </Text></Flex> <Text>CDxKFGM18SDFK82</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Curriculum Vitae </Text></Flex> <Text>CDxKFGM18SDFK82</Text>
             </ListItem>
 
             
@@ -315,15 +315,15 @@ const TeacherDetails = ({ data }) => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Courses</Text> <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins ExtraBold'}>{count}</Text></Skeleton>
+              <Text fontWeight={500} color={'gray.600'}>Courses</Text> <Skeleton isLoaded={request.isSuccess}><Text>{count}</Text></Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Statut </Text> <Text color={data.statut === 1 ? 'green.400' : 'red.400'}>{data.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
+              <Text fontWeight={500} color={'gray.600'}>Statut </Text> <Text color={data.statut === 1 ? 'green.400' : 'red.400'}>{data.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Rate </Text> <Text>3.5</Text>
+              <Text fontWeight={500} color={'gray.600'}>Rate </Text> <Text>3.5</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'flex-end'} gap={10}>
@@ -394,7 +394,7 @@ const TeacherDetails = ({ data }) => {
                     request.data.map((item, index)=> <Td key={index} isNumeric fontWeight={600} fontSize={'md'}>{item.unit}</Td>) :
                   <Flex flexDir={'column'} align={'center'} justify={'center'}>
                     <Image src={image} maxW={{base: '6em', md: '6em'}} opacity={0.9} /> 
-                    <Heading mt={3} fontSize={'sm'} color={'gray.400'}>Aucune données <br />disponible</Heading>
+                    <Text mt={3} fontSize={'sm'} textAlign={'center'} color={'gray.400'}>Aucune données <br />disponible</Text>
                   </Flex>
                   } 
                 </Tr> 

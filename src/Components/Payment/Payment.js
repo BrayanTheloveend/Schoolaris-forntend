@@ -230,8 +230,8 @@ const Payment = () => {
                         <Box mt={4} textAlign={'left'}>
                             <Text color={'white'}>Informations de l'etudiant</Text><br />
                             
-                            <Skeleton isLoaded={isSuccess}><Text fontFamily={'Poppins semiBold'} fontSize={'xl'} color={'white'}>{data?.name} {data?.surname} </Text></Skeleton>
-                            <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins'} fontSize={'md'} color={'white'}>{request.data?.name}</Text></Skeleton>
+                            <Skeleton isLoaded={isSuccess}><Text fontWeight={600} fontSize={'xl'} color={'white'}>{data?.name} {data?.surname.toUpperCase()} </Text></Skeleton>
+                            <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins'} fontSize={'md'} color={'white'}>{request.data?.name.toUpperCase()}</Text></Skeleton>
                             <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins'} fontSize={'md'} color={'white'}>Level {request.data?.level}</Text></Skeleton>
                         </Box>
 
@@ -248,7 +248,7 @@ const Payment = () => {
                 <GridItem px={6} py={4}>
                     <Box px={4}>
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'} >Libellé</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} color={'gray.500'} >Libellé</FormLabel>
                             <Input 
                                 border={'none'}  
                                 rounded={'none'} 
@@ -270,7 +270,7 @@ const Payment = () => {
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Methode de paiement</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} color={'gray.500'}>Methode de paiement</FormLabel>
                             
                                 <Select 
                                     borderLeft={'none'} 
@@ -296,7 +296,7 @@ const Payment = () => {
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>{ parseInt(payload.method) === 1 || parseInt(payload.method) === 2 ? 'Numero de Telephone' : 'Credit Card Number' }</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} color={'gray.500'}>{ parseInt(payload.method) === 1 || parseInt(payload.method) === 2 ? 'Numero de Telephone' : 'Credit Card Number' }</FormLabel>
                             <InputGroup>
                                 <InputLeftAddon 
                                 h={'40px'}
@@ -332,7 +332,7 @@ const Payment = () => {
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel gap={2} mt={1} display={'flex'} fontFamily={'Poppins SemiBold'} color={'gray.500'}>Montant</FormLabel>
+                            <FormLabel gap={2} mt={1} display={'flex'} color={'gray.500'}>Montant</FormLabel>
                             <InputGroup>
                                 <Input
                                 h={'40px'}  

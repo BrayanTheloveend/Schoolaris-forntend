@@ -348,7 +348,7 @@ const StudentDetails = () => {
         templateRows={{base: 'unset', md: 'repeat(2, 1fr)'}}
         templateColumns={{base: '1fr', md: 'repeat(4, 1fr)'}}
       >
-        <GridItem pos={'relative'} colSpan={{base: 1, md: 4}} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
+        <GridItem pos={'relative'} bgSize={'cover'} bgRepeat={'no-repeat'} colSpan={{base: 1, md: 4}} minH={'200px'} bgImg={bgblue} borderRadius={'30px'} _before={{
           position: 'absolute',
           background: 'rgba(0, 0, 0, 0.30)',
           top: 0,
@@ -383,12 +383,12 @@ const StudentDetails = () => {
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={10} mt={4} justifyContent={'space-between'} alignItems={'center'}>
-            <Text fontWeight={600} fontFamily={'Poppins semiBold'} noOfLines={1} fontSize={'md'} color={'white'}>
+            <Text fontWeight={600}  noOfLines={1} fontSize={'md'} color={'white'}>
               ID #{userId}
             </Text>
 
             <Skeleton isLoaded={student.isSuccess}>
-              <Text fontWeight={600} noOfLines={2} fontSize={'md'} fontFamily={'Poppins semiBold'} color={'white'}>
+              <Text fontWeight={600} noOfLines={2} fontSize={'md'}  color={'white'}>
                 CreatAt: {dayjs(student.data?.createdAt).format('DD.MM.YYYY')}
               </Text>
             </Skeleton>
@@ -404,7 +404,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}> 
                 <FiChevronRight/>  
-                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Full Name</Text>
+                <Text fontWeight={500} color={'gray.600'} >Full Name</Text>
               </Flex>
               <Skeleton isLoaded={student.isSuccess}>
                 <Text>{student.data?.name} {student.data?.surname}</Text>
@@ -415,7 +415,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                 <FiChevronRight/>
-                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Birthday</Text>
+                <Text fontWeight={500} color={'gray.600'} >Birthday</Text>
               </Flex> 
               <Skeleton isLoaded={student.isSuccess}>
                 <Text>{ dayjs(student.data?.birthday).format('DD.MM.YYYY')}</Text>
@@ -425,7 +425,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                 <FiChevronRight/>
-                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>
+                <Text fontWeight={500} color={'gray.600'} >
                   Subject 
                 </Text>
               </Flex> 
@@ -437,7 +437,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                 <FiChevronRight/>
-                <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>
+                <Text fontWeight={500} color={'gray.600'} >
                 Mobile 
                 </Text>
               </Flex>
@@ -449,7 +449,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                <FiChevronRight/>
-               <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Note Receipt </Text>
+               <Text fontWeight={500} color={'gray.600'} >Note Receipt </Text>
               </Flex>
               <Skeleton isLoaded={student.isSuccess}>
                 <Link  title='Mettre à jour le relevé de note' color='green.500' onClick={()=>openPdf(`http://localhost:${process.env.REACT_APP_PORT}/profile/${student.data?.profile}`)}>...Cliquez pour ouvrir</Link> 
@@ -464,22 +464,22 @@ const StudentDetails = () => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>School Fees</Text> 
-              <Skeleton isLoaded={request.isSuccess}><Text fontFamily={'Poppins ExtraBold'}>{formatter.format(request.data?.fees)}</Text>
+              <Text fontWeight={500} color={'gray.600'} >School Fees</Text> 
+              <Skeleton isLoaded={request.isSuccess}><Text fontWeight={600}>{formatter.format(request.data?.fees)}</Text>
               </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Already payed</Text> <Skeleton isLoaded={payment.isSuccess}><Text fontFamily={'Poppins ExtraBold'}>
+              <Text fontWeight={500} color={'gray.600'} >Already payed</Text> <Skeleton isLoaded={payment.isSuccess}><Text fontWeight={600}>
               { payment.isSuccess && formatter.format(payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))}</Text></Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Statut </Text> <Text color={student.data?.statut === 1 ? 'green.400' : 'red.400'}>{student.data?.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
+              <Text fontWeight={500} color={'gray.600'} >Statut </Text> <Text color={student.data?.statut === 1 ? 'green.400' : 'red.400'}>{student.data?.statut === 1 ? 'Activé' : 'Non Activé'}</Text>
             </ListItem>
 
             <ListItem  display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} fontFamily={'Poppins Semibold'}>Rate </Text> <Text>3.5</Text>
+              <Text fontWeight={500} color={'gray.600'} >Rate </Text> <Text>3.5</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={ 'center'} gap={0} >
@@ -612,7 +612,7 @@ const StudentDetails = () => {
                     <Td fontWeight={600} fontSize={'md'} color={'gray.600'}>{item.title}</Td>
                     <Td fontWeight={600} fontSize={'md'} color={'gray.600'}>{ (item.method === 1 || item.method === 2) ? `+237 ${item.credential}` : item.credential}</Td>
                     <Td><Image src={methodPayment(item.method.toString())} w={'35px'}/></Td>
-                    <Td fontWeight={600} fontSize={'md'} fontFamily={'Poppins extraBold'} color={textColor}>{formatter.format(item.amount)}</Td>
+                    <Td fontWeight={600} fontSize={'md'} color={textColor}>{formatter.format(item.amount)}</Td>
                     <Td>
                       <IconButton
                         icon={<FiPrinter/>} 

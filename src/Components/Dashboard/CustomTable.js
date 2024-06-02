@@ -66,7 +66,7 @@ function CustomTable({ columns, data, isLoading}) {
           { page.length !== 0 && headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <Th {...column.getHeaderProps()} fontFamily={'Poppins semiBold'}>{column.render("Header")}</Th>
+                <Th {...column.getHeaderProps()} fontFamily={'Poppins'} fontWeight={600}>{column.render("Header")}</Th>
               ))}
             </Tr>
           ))}

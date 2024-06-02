@@ -70,7 +70,7 @@ const [payload, setPayload] = useState({
 
 
     const handleSubmit = (e)=>{
-        e.preventDefault()
+      e.preventDefault()
 
     if(!payload.name){
         setValidInput({ 
@@ -224,7 +224,7 @@ useEffect(() => {
             borderTopRightRadius:'20px',
           }}
           >
-           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins semibold'} textAlign={'center'} color={'white'}>Ajouter un cour</Text> 
+           <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Ajouter un cour</Text> 
         </Flex>
 
           <Box p={6}>

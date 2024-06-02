@@ -51,7 +51,7 @@ const config = {
 const theme = extendTheme({
   config,
   fonts: {
-    heading: `Poppins semiBold, sans-serif`,
+    heading: `Poppins, sans-serif`,
     body: `Poppins, sans-serif`,
   },
 

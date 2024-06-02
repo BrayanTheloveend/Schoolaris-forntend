@@ -8,7 +8,7 @@ const Message = ({data}) => {
         <Avatar size={'sm'} src={data.image}/>
         <Box pos={'relative'} display={'flex'} justifyContent={'space-between'} alignItems={'center'} w={'full'}>
             <Box>
-            <Text fontSize={'14px'} color={color} fontFamily={'Poppins extraBold'}>
+            <Text fontSize={'14px'} fontWeight={700} color={color} fontFamily={'Poppins'}>
               {data.name}
             </Text>
             <Text as={'p'} noOfLines={1}>

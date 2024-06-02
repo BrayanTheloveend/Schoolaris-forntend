@@ -332,12 +332,12 @@ const Dashbord = () => {
                         </Text> 
                     </Box>
                 </Flex>), 
-            subject: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}>{elt.subject} </Text>,   
+            subject: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}>{elt.subject} {elt.level} </Text>,   
             statut: <Tag size={{base: 'sm', md: 'md'}} variant='subtle' colorScheme={ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? 'red' : 'green'}>
             <TagLeftIcon boxSize='12px' as={ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? WarningIcon : CheckIcon   } />
             <TagLabel>{ elt?.payed.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0) < elt?.fees ? `non soldé` : 'soldé'}</TagLabel>
             </Tag>,
-            fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins semiBold'}> {formatter.format(elt.fees)}</Text>,   
+            fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> {formatter.format(elt.fees)}</Text>,   
             payed: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} >{ formatter.format(elt?.payed.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))}</Text>,
             
         }
@@ -363,8 +363,8 @@ const Dashbord = () => {
                 variants={cardVariant}
                 animate={'animate'}
                 isLoading={Payment.isSuccess} 
-                info={Payment.isSuccess && `${ Payment.data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0)} Fcfa`}
-                total={Payment.isSuccess && kFormatter(Payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))} 
+                info={Payment.isSuccess ? `${ Payment.data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0)} Fcfa` : 'info'}
+                total={Payment.isSuccess ? kFormatter(Payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0)) : 'info'} 
                 title='Revenue' 
                 colorOne={'red.400'} 
                 colorTwo={'#FF0080'} 
@@ -435,7 +435,7 @@ const Dashbord = () => {
                     </Flex>
 
 
-                    <CustomTable columns={columns} data={ paymentStatus.isSuccess ? formatedData : [] } isLoading={paymentStatus.isSuccess}/>
+                    <CustomTable columns={columns} data={ paymentStatus.isSuccess ? formatedData : [] } isLoading={paymentStatus.isLoading}/>
 
             
 

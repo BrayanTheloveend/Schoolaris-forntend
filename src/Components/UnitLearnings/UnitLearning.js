@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
 import { FiChevronLeft, FiFilter, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
 import CustomTable from '../Dashboard/CustomTable'
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, InfoIcon } from '@chakra-ui/icons'
 import { useDeleteUnitMutation, useGetUnitQuery } from '../Redux/ApiSlice'
 import AddUnit from './AddUnit'
 import { motion } from 'framer-motion'
@@ -149,13 +149,13 @@ Data.map(elt=>{
  return(
    {
      key: elt.id,
-     checkbox: <input className="form-check-input" type="checkbox" name={elt.id} onClick={handleChange} checked={elt?.isChecked || false} id="flexCheckDefault" />,
+     checkbox: <input className="form-check-input" type="checkbox" name={elt.id} onChange={handleChange} checked={elt?.isChecked || false} id="flexCheckDefault" />,
      name: 
         <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
           {elt.name}
         </Text>, 
-      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} fontFamily= {'Poppins Light'}> # {elt.code} </Text>,   
-      coef: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} fontFamily= {'Poppins semiBold'}> {elt.coefficient} Credit </Text>,   
+      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> # {elt.code} </Text>,   
+      coef: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert}> {elt.coefficient} Credit </Text>,   
       label: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1}  color={textcolor}>{elt.description}</Text>,
       options:  
       <Flex gap={2}>
@@ -166,6 +166,11 @@ Data.map(elt=>{
             setToogle(true)
             }} 
           size={{base: 'sm', md: 'md'}} color={'blue.400'} /> */}
+
+        <IconButton icon={<InfoIcon/>} size={{base: 'sm', md: 'md'}} color={'blue.400'}
+          onClick={()=> navigate(`/unitLearning/${elt.id}/${elt.SubjectId}`)}
+        />
+        
         <IconButton icon={<DeleteIcon/>} size={{base: 'sm', md: 'md'}} color={'red.400'}
           onClick={()=>{
             setId({ index: data.findIndex(item => item.id === elt.id), current: elt.id})
@@ -180,6 +185,7 @@ Data.map(elt=>{
             setToogle(true)
           }}
         />
+
       </Flex>
       }
     )
@@ -199,7 +205,7 @@ Data.map(elt=>{
       initial={'hidden'}
       animate={'visible'}
     >
-        <CustomHeading title={'Gestions Cours'} prevSection={'Cours'} currentSection={ toogle ? 'Ajouter un cours':  'listes des cours'} nextSection={null}/>
+        <CustomHeading title={'Gestions des UA'} prevSection={'Cours'} currentSection={ toogle ? 'Ajouter un cours':  'listes des cours'} nextSection={null}/>
 
         { !toogle ? 
 
@@ -253,7 +259,7 @@ Data.map(elt=>{
             </GridItem>
         </Grid> :
 
-        <AddUnit close = {()=>setToogle(false)} onUpdate={onUpdate} setOnUpdate={()=>setOnUpdate(false)} cached={ data?.length > 0 ? data[id.index] : []}/> 
+        <AddUnit close ={()=>setToogle(false)} onUpdate={onUpdate} setOnUpdate={()=>setOnUpdate(false)} cached={ data?.length > 0 ? data[id.index] : []}/> 
         }
 
         <Modal isOpen={isOpen} onClose={onClose} isCentered >
