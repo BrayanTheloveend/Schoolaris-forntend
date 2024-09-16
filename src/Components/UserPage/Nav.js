@@ -88,7 +88,7 @@ export const DesktopNav = () => {
                   minW={'sm'}>
                   <Stack>
                     {navItem?.children.map((child) => (
-                      <DesktopSubNav key={child.label} {...child} />
+                      <DesktopSubNav key={child?.label} {...child} />
                     ))}
                   </Stack>
                 </PopoverContent>
@@ -169,7 +169,7 @@ export const DesktopNav = () => {
     return (
       <Stack bg={useColorModeValue('white', 'gray.800')} p={4} display={{ md: 'none' }}>
         {NavItem.map((navItem) => (
-          <MobileNavItem key={navItem.label} {...navItem} />
+          <MobileNavItem key={navItem?.label} {...navItem} />
         ))}
       </Stack>
     )
@@ -216,14 +216,14 @@ export const DesktopNav = () => {
             {children &&
               children.map((child) => (
                 <Box as="a" 
-                  key={child.label} 
+                  key={child?.label} 
                   py={2} 
-                  href={child.href}
+                  href={child?.href}
                   _hover={{
                     color: primaryDark
                   }}
                   >
-                  {child.label}
+                  {child?.label}
                 </Box>
               ))}
           </Stack>

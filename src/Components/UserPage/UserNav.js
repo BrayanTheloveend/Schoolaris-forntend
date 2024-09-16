@@ -154,7 +154,7 @@ const UserNav = () => {
                             <Avatar
                             size={'sm'}
                             src={
-                                `${process.env.REACT_APP_PORT}/${ savedData.roleName === 'STUDENT' ?  `image` : 'image2'}/${ savedData?.picture }`
+                                `${process.env.REACT_APP_PORT}/${ savedData?.roleName === 'STUDENT' ?  `image` : 'image2'}/${ savedData?.picture }`
                             }
                             />
                             <VStack
