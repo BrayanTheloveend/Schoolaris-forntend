@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.css": "/static/css/main.48e4da07.css",
+    "main.js": "/static/js/main.415bfd09.js",
+    "static/js/787.163ff83d.chunk.js": "/static/js/787.163ff83d.chunk.js",
+    "static/media/study.png": "/static/media/study.7a0b779ed31d72c048bb.png",
+    "static/media/Contactless-Payment.jpg": "/static/media/Contactless-Payment.666330dec43253a343e7.jpg",
+    "static/media/login-bg@2x.png": "/static/media/login-bg@2x.8a6e9212e3f1037fa854.png",
+    "static/media/teach.jpg": "/static/media/teach.96eec12e6bdd3be4d474.jpg",
+    "static/media/stud.jpg": "/static/media/stud.1f79d5826ab6ac6b8f74.jpg",
+    "static/media/datanotfound.png": "/static/media/datanotfound.04aa6e9d1e606ac73d7f.png",
+    "static/media/Preparing.jpg": "/static/media/Preparing.9f7d74b86d53167db0b2.jpg",
+    "static/media/bgstudent.webp": "/static/media/bgstudent.e79c15b30fda949d6839.webp",
+    "static/media/orange.png": "/static/media/orange.e6852fc3db2d43c7ad7f.png",
+    "static/media/logo.jpg": "/static/media/logo.91447a83f112dcbea5c9.jpg",
+    "static/media/bgteacher.webp": "/static/media/bgteacher.8fa11ee55e1ad9a576fd.webp",
+    "static/media/cmr flag.png": "/static/media/cmr flag.c79c013bdd8e87889afe.png",
+    "static/media/logo visa.png": "/static/media/logo visa.4b7ddb859355ccfc8794.png",
+    "static/media/images.png": "/static/media/images.d93858aeeab6cedd73a4.png",
+    "static/media/doc2.png": "/static/media/doc2.c89dda67498d8ab1b4e5.png",
+    "index.html": "/index.html",
+    "static/media/paw.svg": "/static/media/paw.ec0f618c536849b543ef3e5cee978d36.svg",
+    "static/media/rainy.svg": "/static/media/rainy.23333b24c21778ead410bb56b16bece5.svg",
+    "static/media/fitness.svg": "/static/media/fitness.fda2e50c029545121135c4a7dff455f0.svg",
+    "static/media/speedometer.svg": "/static/media/speedometer.f8fc48cc1ba02977b78ee9b98dbc077d.svg",
+    "main.48e4da07.css.map": "/static/css/main.48e4da07.css.map",
+    "main.415bfd09.js.map": "/static/js/main.415bfd09.js.map",
+    "787.163ff83d.chunk.js.map": "/static/js/787.163ff83d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.48e4da07.css",
+    "static/js/main.415bfd09.js"
+  ]
+}
