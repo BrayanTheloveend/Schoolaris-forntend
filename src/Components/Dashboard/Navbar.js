@@ -57,7 +57,7 @@ const Navbar = ({ onOpen, openMessage }) => {
         <Text
           display={{ base: 'flex', md: 'none' }}
           fontSize="md"
-          color={useColorModeValue(primaryLight, primaryDark)}
+          color={vert}
           fontWeight="bold">
           Schoolaris 
         </Text>

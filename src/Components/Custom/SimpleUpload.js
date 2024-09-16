@@ -11,15 +11,15 @@ const SimpleUpload = ({handleChange, valid, setValid}) => {
         }
     }
 
-    const [ placeholder, setPlaceholder ] =useState('Veuillez importer un fichier')
+    const [ placeholder, setPlaceholder ] =useState('Cliquez pour importer !')
 
 
   return (
 
     <Flex
-    h={10}
-    border={'2px dashed'}
-    borderColor={valid ? 'gray.400': 'red.400'}
+    h={'40px'}
+    border={'1px solid'}
+    borderColor={valid ? 'gray.200': 'red.400'}
     gap={8} 
     px={6}
     rounded={4}
@@ -27,7 +27,7 @@ const SimpleUpload = ({handleChange, valid, setValid}) => {
     align={'center'}
     >
         
-        <Icon as={FiFilePlus} fontSize={'md'}/>
+        <Icon as={FiFilePlus} color={'green.400'} fontSize={'md'}/>
         <Text fontSize={'md'} noOfLines={1}>
           {placeholder}
         </Text>

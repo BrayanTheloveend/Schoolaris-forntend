@@ -15,27 +15,58 @@ import {
     ChevronDownIcon,
     ChevronRightIcon,
   } from '@chakra-ui/icons'
-import { primaryDark, primaryLight, colorBase } from '../theme'
-import { NavItem } from './NavItem'
+import { primaryDark, colorBase, vert } from '../theme'
+
+
   
 
 
 export const DesktopNav = () => {
 
     const linkColor = useColorModeValue('gray.600', 'gray.200')
-    const linkHoverColor = useColorModeValue(primaryLight, primaryDark)
+    const linkHoverColor = useColorModeValue(vert, vert)
     const popoverContentBgColor = useColorModeValue('white', 'gray.800')
+    const savedData = JSON.parse(localStorage.getItem('userData'))
+    
+    
+
+    const NavItem = [
+      {
+        label: 'Accueil',
+        href: '/',
+        component: ''
+      },
+  
+      savedData?.roleName && {
+
+        label: 'Informations',
+        children: [
+  
+           {
+            label: savedData?.roleName === 'STUDENT' ?  'Mes Resultats' : 'Gérer les Notes',
+            subLabel: savedData?.roleName === 'STUDENT' ? 'Retrouver vos notes d\'examen' : 'Attribuer des notes',
+            href: '/note',
+          },
+          savedData?.roleName === 'STUDENT' && {
+            label: savedData?.roleName === 'STUDENT' ?  'Mes Cours' : 'Gérer les Notes',
+            subLabel: savedData?.roleName === 'STUDENT' ? 'Retrouver vos cours en exclusivité' : 'Attribuer des notes',
+            href: '/cours',
+          },
+  
+        ],
+      },
+    ]
   
     return (
       <Stack direction={'row'}  spacing={4}>
         {NavItem.map((navItem) => (
-          <Box key={navItem.label}>
+          <Box key={navItem?.label}>
             <Popover trigger={'hover'} placement={'bottom-start'}>
               <PopoverTrigger>
                 <Box
                   as="a"
                   p={2}
-                  href={navItem.href ?? '#'}
+                  href={navItem?.href ?? '#'}
                   fontSize={'sm'}
                   fontWeight={500}
                   color={linkColor}
@@ -43,11 +74,11 @@ export const DesktopNav = () => {
                     textDecoration: 'none',
                     color: linkHoverColor,
                   }}>
-                  {navItem.label}
+                  {navItem?.label}
                 </Box>
               </PopoverTrigger>
   
-              {navItem.children && (
+              {navItem?.children && (
                 <PopoverContent
                   border={0}
                   boxShadow={'xl'}
@@ -56,7 +87,7 @@ export const DesktopNav = () => {
                   rounded={'xl'}
                   minW={'sm'}>
                   <Stack>
-                    {navItem.children.map((child) => (
+                    {navItem?.children.map((child) => (
                       <DesktopSubNav key={child.label} {...child} />
                     ))}
                   </Stack>
@@ -83,7 +114,7 @@ export const DesktopNav = () => {
           <Box>
             <Text
               transition={'all .3s ease'}
-              _groupHover={{ color: primaryLight }}
+              _groupHover={{ color: vert }}
               fontWeight={500}>
               {label}
             </Text>
@@ -98,7 +129,7 @@ export const DesktopNav = () => {
             justify={'flex-end'}
             align={'center'}
             flex={1}>
-            <Icon color={primaryLight} w={5} h={5} as={ChevronRightIcon} />
+            <Icon color={vert} w={5} h={5} as={ChevronRightIcon} />
           </Flex>
         </Stack>
       </Box>
@@ -106,6 +137,35 @@ export const DesktopNav = () => {
   }
   
   export const MobileNav = () => {
+
+    const savedData = JSON.parse(localStorage.getItem('userData'))
+    const NavItem = [
+      {
+        label: 'Accueil',
+        href: '/',
+        component: ''
+      },
+  
+      savedData?.roleName && {
+
+        label: 'Informations',
+        children: [
+  
+           {
+            label: savedData?.roleName === 'STUDENT' ?  'Mes Resultats' : 'Gérer les Notes',
+            subLabel: savedData?.roleName === 'STUDENT' ? 'Retrouver vos notes d\'examen' : 'Attribuer des notes',
+            href: '/note',
+          },
+          savedData?.roleName === 'STUDENT' && {
+            label: savedData?.roleName === 'STUDENT' ?  'Mes Cours' : 'Gérer les Notes',
+            subLabel: savedData?.roleName === 'STUDENT' ? 'Retrouver vos cours en exclusivité' : 'Attribuer des notes',
+            href: '/cours',
+          },
+  
+        ],
+      },
+    ]
+
     return (
       <Stack bg={useColorModeValue('white', 'gray.800')} p={4} display={{ md: 'none' }}>
         {NavItem.map((navItem) => (

@@ -29,16 +29,16 @@ const ResetPassword = () => {
   return (
     <Flex w={'100vw'}  position={'relative'}
     _before={{
-      display: 'block',
-      position: 'absolute',
-      content: "''",
-      width: '100%',
-      top: 0,
-      bottom: 0,
-      bg: 'blue.400',
-      bgGradient: 'linear-gradient(-135deg, #c850c0, #4158d0)',
-      opacity: 0.7,
-    }} h={'100vh'} justify={'center'} align={'center'} bg={`url(${img})`} bgSize={'cover'}>
+        display: 'block',
+        position: 'absolute',
+        content: "''",
+        width: '100%',
+        top: 0,
+        bottom: 0,
+        bg: '#000',
+        //bgGradient: 'linear-gradient(-135deg, #c850c0, #4158d0)',
+        opacity: 0.5,
+      }} h={'100vh'} justify={'center'} align={'center'} bg={`url(${img})`} bgSize={'cover'}>
 
         <Grid gridTemplateColumns={'350px'} gap={2} gridRow={'300px'} minH={'400px'}>
             <GridItem border={'2px solid rgba(255, 255, 255, .2)'} backdropFilter={'blur(20px)'} bg={'rgba(255, 255, 255, .2)'} boxShadow={ '0 0 12px rgba(0, 0, 0, 0.5)'} rounded={'20px'}  p={6} >

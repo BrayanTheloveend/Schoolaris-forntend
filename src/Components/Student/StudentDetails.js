@@ -12,7 +12,7 @@ import method2 from '../../assets/images/orange.png'
 import method3 from '../../assets/images/logo visa.png'
 import method4 from '../../assets/images/images.png'
 
-import { FiArrowLeft, FiCheckCircle, FiChevronLeft, FiChevronRight, FiPlus, FiPrinter, FiSend } from 'react-icons/fi'
+import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiPlus, FiPrinter, FiSend } from 'react-icons/fi'
 import bgblue from '../../assets/images/bgstudent.webp'
 import dayjs from 'dayjs'
 import image from '../../assets/images/Dashboard/datanotfound.png'
@@ -34,15 +34,14 @@ import CustomModal from '../Custom/CustomModal'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { vert, formatter } from '../theme'
 import CustomHeading from '../Dashboard/CustomHeading'
+import { useSelector } from 'react-redux'
+import PaymentModal from '../Payment/PaymentModal'
 
 const StudentDetails = () => {
 
-  //navigate between pages
-
-  const navigate = useNavigate()
 
   const textColor = useColorModeValue('gray.600', 'gray.400')
-  const text1 = useColorModeValue('gray.700', 'white')
+  const savedData = JSON.parse(localStorage.getItem('userData'))
 
   //params
 
@@ -52,6 +51,7 @@ const StudentDetails = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const openModal = useDisclosure()
+  const ModalTwo = useDisclosure()
   const [modalData, setmodalData] = useState({
     message: '',
     button: '',
@@ -121,11 +121,12 @@ const StudentDetails = () => {
   const student = useGetStudentByIdQuery(userId)
   const note = useGetNoteByUnitAndStudentQuery({id: userId, index: subjectId})
   const unitLearning = useGetUnitBySubjectQuery(subjectId)
-  const payment =useGetPaymentByStudentIdQuery(userId)
+  const payment =useGetPaymentByStudentIdQuery({id: userId, token: savedData?.token })
   const [ADD] = useAddNoteMutation()
   const [DEL] = useDeleteNoteMutation()
   const [UPDATE] = useUpdateNoteMutation()
   const [PRINT] = usePrintStudentProfileMutation()
+  
 
 
   //GETSTUDENTBYID
@@ -197,31 +198,34 @@ const StudentDetails = () => {
 
 
 
+  //redux state 
 
+  const state = useSelector(state => state.storage.percentNote)
 
 
   //SUBMIT REQUEST
   
   const handleSubmit =()=>{
-    setLoading(true);
-    
-    ADD({...payload, percentId: 1, id: userId}).unwrap()
-    .then(resp =>{
-      setLoading(false);
-      setPayload({
-        idUnit: '/',
-        markOne: 0,
-        markTwo: 0,
-      })
-      onClose()
-      showMessage('success', resp.message, 'Add Task');
 
-    })
-    .catch(err=>{
-      setLoading(false);
-      showMessage('error', err.data.message, 'Add Task', 7000, 'top-center');
-      onClose()
-    })
+      setLoading(true)
+    
+     ADD({...payload, percentId: state, id: userId}).unwrap()
+     .then(resp =>{
+       setLoading(false);
+       setPayload({
+         idUnit: '/',
+         markOne: 0,
+         markTwo: 0,
+       })
+       onClose()
+       showMessage('success', resp.message, 'Add Task');
+
+     })
+     .catch(err=>{
+       setLoading(false);
+       showMessage('error', err.data.message, 'Add Task', 7000, 'top-center');
+       onClose()
+     })
   }
 
   //HELPER
@@ -281,7 +285,7 @@ const StudentDetails = () => {
 
   const handlePrint = async()=>{
     let payload =  {
-      ...student.data, note: note.data, subject: request.data 
+      ...student.data, note: note.data, birth: dayjs(student.data.birthday).format('DD.MM.YYYY'), subject: request.data, percent: state, createdAt: dayjs(new Date()).format('DD.MM.YYYY')
     }
 
     //console.log({'data': payload});
@@ -336,11 +340,11 @@ const StudentDetails = () => {
 
         <Flex gap={4} align={'center'}>
           <Icon color={vert} as={FiArrowLeft} fontSize={20}/>
-          <Link as={NavLink} fontSize={'xl'} to={'/student'} color={vert} fontWeight={600}>Back</Link>
+          <Link as={NavLink}  to={'/student'} color={vert} fontWeight={{base: 400, md: 600}}  fontSize={{base: 'md', md:'xl'}}>Retour</Link>
         </Flex>
         
 
-        <Button colorScheme={'green'} color={vert} borderColor={vert} variant={'outline'} onClick={handlePrint} isLoading={loading}  isDisabled={!(note.isSuccess && request.isSuccess)} rounded={'full'} ><FiPrinter/> Imprimer</Button>
+        <Button  colorScheme={'green'} size={{base: 'sm', md: 'md'}} color={vert} borderColor={vert} variant={'outline'} onClick={handlePrint} isLoading={loading}  isDisabled={!(note.isSuccess && request.isSuccess && note.data.length !== 0)} rounded={'full'} ><FiPrinter/> Imprimer</Button>
       </Flex>
 
       <Grid
@@ -383,12 +387,12 @@ const StudentDetails = () => {
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={10} mt={4} justifyContent={'space-between'} alignItems={'center'}>
-            <Text fontWeight={600}  noOfLines={1} fontSize={'md'} color={'white'}>
-              ID #{userId}
+            <Text fontWeight={{base: 400, md: 600}}  fontSize={{base: 'sm',md:'md'}} noOfLines={1}  color={'white'}>
+              Matricule #{student.data?.matricule}
             </Text>
 
             <Skeleton isLoaded={student.isSuccess}>
-              <Text fontWeight={600} noOfLines={2} fontSize={'md'}  color={'white'}>
+              <Text fontWeight={{base: 400, md: 600}} noOfLines={2} fontSize={{base: 'sm',md:'md'}}  color={'white'}>
                 CreatAt: {dayjs(student.data?.createdAt).format('DD.MM.YYYY')}
               </Text>
             </Skeleton>
@@ -404,7 +408,7 @@ const StudentDetails = () => {
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}> 
                 <FiChevronRight/>  
-                <Text fontWeight={500} color={'gray.600'} >Full Name</Text>
+                <Text fontWeight={500} color={'gray.600'} >Nom Complet</Text>
               </Flex>
               <Skeleton isLoaded={student.isSuccess}>
                 <Text>{student.data?.name} {student.data?.surname}</Text>
@@ -415,18 +419,18 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                 <FiChevronRight/>
-                <Text fontWeight={500} color={'gray.600'} >Birthday</Text>
-              </Flex> 
+                <Text fontWeight={500} color={'gray.600'} >Date de naissance</Text>
+              </Flex>
               <Skeleton isLoaded={student.isSuccess}>
-                <Text>{ dayjs(student.data?.birthday).format('DD.MM.YYYY')}</Text>
+                <Text>{ dayjs(student.data?.birthday).format('DD.MM.YYYY') }</Text>
               </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                 <FiChevronRight/>
-                <Text fontWeight={500} color={'gray.600'} >
-                  Subject 
+                <Text fontWeight={500} color={'gray.600'}>
+                  Filiére 
                 </Text>
               </Flex> 
               <Skeleton isLoaded={request.isSuccess}>
@@ -449,10 +453,15 @@ const StudentDetails = () => {
             <ListItem display={'flex'} justifyContent={'space-between'}>
               <Flex gap={2} justifyContent={'center'} alignItems={'center'}>
                <FiChevronRight/>
-               <Text fontWeight={500} color={'gray.600'} >Note Receipt </Text>
+               <Text fontWeight={500} color={'gray.600'} >Relevé </Text>
               </Flex>
               <Skeleton isLoaded={student.isSuccess}>
-                <Link  title='Mettre à jour le relevé de note' color='green.500' onClick={()=>openPdf(`http://localhost:${process.env.REACT_APP_PORT}/profile/${student.data?.profile}`)}>...Cliquez pour ouvrir</Link> 
+                { student.data?.profile ? 
+                  <Link title='Mettre à jour le relevé de note' color='green.500' onClick={()=>openPdf(`http://localhost:${process.env.REACT_APP_PORT}/profile/${student.data?.profile}`)}>...Cliquez pour ouvrir</Link> : 
+                  <Text>
+                    Non disposible
+                  </Text>
+                }
               </Skeleton> 
             </ListItem>
           </List>
@@ -464,13 +473,13 @@ const StudentDetails = () => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} >School Fees</Text> 
+              <Text fontWeight={500} color={'gray.600'} >Pension Annuelle</Text> 
               <Skeleton isLoaded={request.isSuccess}><Text fontWeight={600}>{formatter.format(request.data?.fees)}</Text>
               </Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'} >Already payed</Text> <Skeleton isLoaded={payment.isSuccess}><Text fontWeight={600}>
+              <Text fontWeight={500} color={'gray.600'}>Déjà payé</Text> <Skeleton isLoaded={payment.isSuccess}><Text fontWeight={600}>
               { payment.isSuccess && formatter.format(payment.data.reduce( (accumulator, currentValue) => accumulator + currentValue.amount, 0))}</Text></Skeleton>
             </ListItem>
 
@@ -494,7 +503,7 @@ const StudentDetails = () => {
                 maxW: 'full'
               }}
 
-              placeholder={`Write message to ${student.data?.name}`}
+              placeholder={`Ecrire à ${student.data?.name}`}
               />
               <IconButton roundedRight={'full'} roundedLeft={'none'} pr={1} icon={<FiSend/>} onClick={()=>setWrite(!write)} colorScheme='green' bg={vert}/>
             </ListItem>
@@ -584,7 +593,7 @@ const StudentDetails = () => {
           <Text fontSize={'md'} fontWeight={'500'}>Historique de paiement</Text>
           <Flex gap={2}>
           </Flex>
-            <Button colorScheme='green' bg={vert} title='redirect to Payment page' rounded={'full'} onClick={()=>setTimeout(navigate, 0, `/payment/${userId}/${subjectId}`)}>
+            <Button colorScheme='green' bg={vert} title='redirect to Payment page' rounded={'full'} onClick={()=>ModalTwo.onOpen()}>
               <FiCheckCircle/>Payer
             </Button>
         </Flex>
@@ -609,8 +618,8 @@ const StudentDetails = () => {
 
                   payment.data.map((item, index)=> 
                   <Tr key={index}>
-                    <Td fontWeight={600} fontSize={'md'} color={'gray.600'}>{item.title}</Td>
-                    <Td fontWeight={600} fontSize={'md'} color={'gray.600'}>{ (item.method === 1 || item.method === 2) ? `+237 ${item.credential}` : item.credential}</Td>
+                    <Td fontWeight={600} fontSize={'md'} color={textColor}>{item.title}</Td>
+                    <Td fontWeight={600} fontSize={'md'} color={textColor}>{ (item.method === 1 || item.method === 2) ? `+237 ${item.credential}` : item.credential}</Td>
                     <Td><Image src={methodPayment(item.method.toString())} w={'35px'}/></Td>
                     <Td fontWeight={600} fontSize={'md'} color={textColor}>{formatter.format(item.amount)}</Td>
                     <Td>
@@ -629,7 +638,7 @@ const StudentDetails = () => {
           :
           <Flex mb={6} flexDir={'column'} align={'center'} justify={'center'}>
             <Image src={image} maxW={{base: '6em', md: '6em'}} opacity={0.9} /> 
-            <Heading mt={3} fontSize={'sm'} color={'gray.400'}>No data to display</Heading>
+            <Heading mt={3} fontSize={'sm'} color={'gray.400'}>Aucne Données</Heading>
           </Flex>
         }
         </Skeleton>
@@ -644,19 +653,19 @@ const StudentDetails = () => {
     <Modal isOpen={isOpen} closeOnOverlayClick={false} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-        <ModalHeader>{ onUpdate ? 'Update Note':'Add Student Note'}</ModalHeader>
+        <ModalHeader>{ onUpdate ? 'Editer la note':'Ajouter des Notes'}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Fill the following fields to ${ onUpdate ? 'Update':'Add'}`} <strong>{student.data?.name}'s notes</strong></Text>
+          <Text noOfLines={3} mb={4} fontSize={'md'}>{`Remplir les champs pour ${ onUpdate ? 'Mettre a jour':'Ajouter'}`} les notes de <strong>{student.data?.name}</strong></Text>
           
           <FormControl>
-            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}> <ion-icon name="archive-outline"></ion-icon> Unit Learning </FormLabel>
+            <FormLabel alignItems={'center'} gap={2} mt={1} display={'flex'}> <ion-icon name="archive-outline"></ion-icon> Unité UA </FormLabel>
             <Skeleton isLoaded={unitLearning.isSuccess} rounded={'full'}>
               <Select 
               disabled={onUpdate}
               value={payload.idUnit}
               name='Unit'
-              placeholder={ unitLearning.isSuccess && unitLearning.data.length === 0 ? 'Aucune UA disponible': 'select Unit'}
+              placeholder={ unitLearning.isSuccess && unitLearning.data.length === 0 ? 'Aucune UA disponible': 'Choisir une UA'}
               onChange={e=> setPayload({...payload, idUnit: e.target.options[e.target.options.selectedIndex].id})}
               >
                 {
@@ -683,7 +692,7 @@ const StudentDetails = () => {
 
         <ModalFooter>
           <Button variant='outline' rounded={'md'} colorScheme='gray'  mr={3} onClick={resetAndClose}>
-            Cancel
+            Annuler
           </Button>
           <Button  bg={vert} isLoading={loading} rounded={'md'} colorScheme={onUpdate ? 'orange':'green'} isDisabled={disabled} onClick={onUpdate ? handleUpdate : handleSubmit}>{onUpdate ? 'Modifier':'Ajouter'}</Button>
         </ModalFooter>
@@ -700,6 +709,23 @@ const StudentDetails = () => {
       data={note.isSuccess && note.data[id.current]?.header}
       handler={()=> DeleteNote(id.index)}
     />
+
+
+
+    <Modal isOpen={ModalTwo.isOpen} closeOnOverlayClick={false} onClose={ModalTwo.onClose}>
+        <ModalOverlay />
+        <ModalContent>
+        <ModalHeader>Schoolpay</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>          
+          <PaymentModal handleClose={ModalTwo.onClose} id={userId} />
+        </ModalBody>
+
+        </ModalContent>
+    </Modal>
+
+
+
 
 
 

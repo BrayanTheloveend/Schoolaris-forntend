@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useDeleteLessonMutation, useGetLessonByUnitIdQuery, useGetUnitByIdQuery } from '../Redux/ApiSlice'
+import { useDeleteLessonGroupMutation, useDeleteLessonMutation, useGetLessonByUnitIdQuery, useGetUnitByIdQuery } from '../Redux/ApiSlice'
 import LessonItems from './LessonItems'
 import { vert } from '../theme'
 import AddLessons from './AddLessons'
@@ -19,7 +19,11 @@ const Lessons = () => {
     const Unit = useGetUnitByIdQuery(id)
     const textColor = useColorModeValue('gray.500', 'white')
     const bgColor = useColorModeValue('white', 'gray.800')
-
+    const [isChecked, setIsChecked] = useState(false)
+    const [table, setTable]= useState([])
+    const [deleteGroup] = useDeleteLessonGroupMutation()
+  
+    const [ Data, setData ] = useState([])
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [pos, setPos] = useState({
       index: 0, 
@@ -108,12 +112,50 @@ const Lessons = () => {
       //console.log(error.error);
       //return showMessage('error',error.message, 'Fetch Task')
     }else if(isSuccess){
-      //console.log(data);
+      setData(data)
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
   }, [isSuccess, isError, error, isLoading, data, showMessage, navigate])
 
 
+  const handleChange= (e)=>{
+      const { name, checked } = e.target
+
+      if(name === 'allSelected'){
+        setIsChecked(checked)
+        let tempData =  Data.map(item=> { return {...item, isChecked: checked}})
+        setTable(tempData.map(item=> item.isChecked && parseInt(item.id)))
+        setData(tempData)
+          
+      }else{
+        setIsChecked(checked)
+        let tempData =  Data.map(item=> item.id === parseInt(name) ?  {...item, isChecked: checked} : item)
+        setTable(tempData.map(item=> item.isChecked && parseInt(item.id)))
+        setData(tempData)
+      }
+  }
+
+
+  //DELETE LESSON GROUP
+
+  const handleDeleteGroup =()=>{
+
+    const formData = new FormData();
+    for ( let key in table ) {
+      formData.append('lessons', key);
+    }
+
+    setLoading(true)
+    deleteGroup(formData).unwrap()
+    .then(resp=>{ 
+      setLoading(false)
+      showMessage('success', resp.message , 'Delete Task')
+    })
+    .catch(err=> {
+      setLoading(false)
+      showMessage('error',err.message, 'Fetch Task')
+    })
+  }
 
 
 
@@ -131,14 +173,14 @@ const Lessons = () => {
           <>
             <Flex justify={'space-between'} align={'center'} mt={10} bg={bgColor} p={4}>
             <Flex gap={2} align={'center'}>
-              <Checkbox />
+              <Checkbox name="allSelected" onChange={handleChange} isChecked={Data.filter(item => item?.isChecked !== true ).length < 1}  />
               <Text fontSize={'md'} fontWeight={600}> Tout selectionnés </Text>
             </Flex>
             
 
             <Flex gap={4} align={'center'}>
-              <Text fontSize={'md'} color={textColor}><strong>14</strong> elements</Text>
-              <Button colorScheme='red' isDisabled>
+              <Text fontSize={'md'} color={textColor}><strong>{ Data.filter(item => item?.isChecked === true ).length }</strong> elements</Text>
+              <Button isLoading={loading} colorScheme='red' isDisabled={!isChecked} onClick={handleDeleteGroup}>
                 Supprimer
               </Button>
               <Button colorScheme='green' bg={vert} onClick={()=>setShow(true)}>
@@ -148,7 +190,7 @@ const Lessons = () => {
           </Flex>
 
           {
-            isLoading ?  <CustomLoading/> : data.length === 0 ? 
+            isLoading ?  <CustomLoading/> : Data.length === 0 ? 
             
             <Flex minH={'350px'} justify={'center'} align={'center'} flexDir={'column'}>
               <Image src={image} maxW={{base: '6em', md: '8em'}} opacity={0.9} /> 
@@ -163,9 +205,9 @@ const Lessons = () => {
               spacing={{ base: 5, lg: 8 }}
             >
             {
-              isSuccess && data.map(elt=> <LessonItems key={elt.id} data={elt} 
+              isSuccess && Data.map(elt=> <LessonItems key={elt.id} data={elt} onChange={handleChange} checked={elt?.isChecked || false}
                 handleDelete={()=>{
-                setPos({ index: data.findIndex(item => item.id === elt.id), current: elt.id})
+                setPos({ index: Data.findIndex(item => item.id === elt.id), current: elt.id})
                 handleDelete()
                 onOpen()
               }} />)
@@ -185,7 +227,7 @@ const Lessons = () => {
           text={modalData} 
           title={modalData.title}
           isLoading={loading} 
-          data={isSuccess && data[pos?.index]?.label}
+          data={isSuccess && Data[pos?.index]?.label}
           isSuccess={isSuccess}
           handler={()=>handleClick(pos.current) }
         />

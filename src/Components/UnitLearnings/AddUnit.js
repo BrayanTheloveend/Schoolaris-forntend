@@ -200,7 +200,7 @@ useEffect(() => {
 
 
   return (
-    <Grid justifyContent={'center'} gridTemplateColumns={'400px'} mt={8}>
+    <Grid justifyContent={'center'} gridTemplateColumns={{base: '1fr', md:'400px'}} mt={8}>
         <GridItem bg={useColorModeValue('white', 'gray.800')} minH={'300px'} pb={6} borderRadius={'20px'}  boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
           <Flex w={'full'} h={'50px'} 
           justifyContent={'center'} 
@@ -254,7 +254,7 @@ useEffect(() => {
                   <Select 
                    
                   defaultValue={onUpdate && cached.SubjectId}
-                  placeholder='Select subject'
+                  placeholder={ isSuccess && data.length === 0 ? 'Aucune  filiére disponible': 'Choisir une filiére'}
                   disabled={onUpdate ? true : false}
                   onChange={e=> setPayload({...payload, idSubject: e.target.options[e.target.options.selectedIndex].id})}
                   >

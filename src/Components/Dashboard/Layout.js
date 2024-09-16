@@ -27,17 +27,17 @@ import logo from '../../assets/logo.jpg'
 import MessageBox from './MessageBox'
 import Navbar from './Navbar'
 import { BiArch, BiBell, BiBookBookmark, BiPaperclip, BiSpeaker, BiUser } from 'react-icons/bi'
-import { FiBook, FiChevronLeft, FiNavigation, FiSettings, FiTrendingUp } from 'react-icons/fi'
+import { FiBook, FiChevronLeft, FiChevronRight, FiNavigation, FiSettings, FiTrendingUp } from 'react-icons/fi'
 
 
 const LinkItems = [  
   { name: 'Tableau de bord', icon: BiArch, href: '/dash' , color: '#56aceb'},
   { name: 'Formations', icon: FiTrendingUp, href: '/training', color: 'red.500' },
-  { name: 'Gestion des Cours', icon:  FiBook, href: '/unit', color: 'orange.400'},
+  { name: 'Gestion des UA', icon:  FiBook, href: '/unit', color: 'orange.400'},
   { name: 'Gestions des étudiants', icon:  FiNavigation, href: '/student', color: '#32cd32'},
   { name: 'Professeur', icon: BiUser, href: '/teacher', color: '#e7522b' },
-  { name: 'Notifications', icon: BiBell, href: '/order', color: 'pink.500' },
-  { name: 'Settings', icon: FiSettings, href: '/order', color: 'blue.300' },
+  //{ name: 'Notifications', icon: BiBell, href: '/order', color: 'pink.500' },
+  { name: 'Parametres', icon: FiSettings, href: '/setting', color: 'blue.300' },
 ]
 
 
@@ -82,8 +82,9 @@ const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
       <Flex h="20" alignItems="center" mx="8" justifyContent= "space-between">
         {/* <Image src={expandValue ? logo : logo2 } w='160px' /> */}
         <Flex gap={2} justify={'center'} align={'center'}>
-          <Image rounded={'4px'} src={logo} w='30px' />
-          <Text letterSpacing={-1} visibility={expandValue ? 'visible' : 'hidden'} color={useColorModeValue('gray.800','white')} fontSize={'2xl'} fontWeight={600}>Schoo<span style={{color: vert}}>laris</span></Text>
+          <Image rounded={4} src={logo} w='35px' />
+          <Text letterSpacing={-1} display={ {base: 'none', md: 'block'}} visibility={{base: 'hidden', md: expandValue ? 'visible' : 'hidden'}} color={useColorModeValue('gray.800','white')} fontSize={'2xl'} fontWeight={600}>Schoo<span style={{color: vert}}>laris</span></Text>
+          <Text fontSize={'15px'} display={{base: 'block', md: 'none'}} color={useColorModeValue('gray.800','white')} fontWeight={600}>Schoo<span style={{color: vert}}>laris</span></Text>
         </Flex>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
@@ -100,10 +101,11 @@ const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
             rounded={'full'} 
             position={'absolute'} 
             right={-6}
+            transition={'ease-in-out 1.5s all'}
             >
             <Icon
-            transition={'ease-in-out 0.5s all'}
-            as={FiChevronLeft}  
+            transition={'ease-in-out 1.5s all'}
+            as={expandValue ? FiChevronLeft : FiChevronRight}  
             color={'white'}
             fontSize={'22px'}
           />
@@ -124,7 +126,7 @@ const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
         </Flex>
       </Flex>
 
-      <Box ml={8} mt={14} mb={5} display={expandValue ? 'block' : 'none'}><Text fontWeight={600}>Navigation</Text></Box>
+      <Box ml={8} mt={14} mb={5} visibility={{ base: 'visible', md: expandValue ? 'visible' : 'hidden' }}><Text fontWeight={600}>Navigation</Text></Box>
       {LinkItems.map((link,index) => (
         <Link 
         key={index}
@@ -134,9 +136,9 @@ const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
         gap={4}
         textDecoration={'none'}  
         alignItems="center"
-        fontSize={'15px'}
         fontWeight={500}
         py={'10px'}
+        fontSize={'15px'}
         pl={3}
         mx={3}
         role="group"
@@ -160,6 +162,7 @@ const SidebarContent = ({ onClose, expand, expandValue, ...rest }) => {
           />
           
           { expandValue ? link.name : ''}
+          <Text fontSize={{base: '12px', md: '15px'}} display={{base: 'block', md: 'none'}}>{link.name}</Text>
         </Link>
         
       ))}
@@ -180,7 +183,7 @@ const Layout = ({component}) => {
 
   return (
     <Box minH="100vh" bg={useColorModeValue('#efefef', 'gray.900')}>
-      <SidebarContent w={expand ? '20em' : '5.6em' } expand={()=>setExpand(!expand)} expandValue={expand} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+      <SidebarContent w={{ base : '5.4em' , md: expand ? '20em' : '5.6em' }} expand={()=>setExpand(!expand)} expandValue={expand} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         isOpen={isOpen}
         placement="left"

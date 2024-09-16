@@ -1,21 +1,21 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from '@chakra-ui/react'
 import React from 'react'
 
-const CustomModal = ({onClose, isOpen, isLoading, isSuccess, data, handler, text, title}) => {
+const CustomModal = ({onClose, isOpen, isLoading, isSuccess, data, handler, text, title, closeOnOverlayClick}) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered >
+    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick={!closeOnOverlayClick} >
         <ModalOverlay />
         <ModalContent>
         <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
+        {!closeOnOverlayClick && <ModalCloseButton />}
         <ModalBody>
             <Text noOfLines={3} fontSize={'md'}>{text.message} <strong>{data}</strong> ?</Text>
         </ModalBody>
 
         <ModalFooter>
-            <Button rounded={'md'} colorScheme='blue' mr={3} onClick={onClose}>
-            Cancel
-            </Button>
+            { !closeOnOverlayClick && <Button rounded={'md'} colorScheme='blue' mr={3} onClick={onClose}>
+            annuler
+            </Button>}
             <Button variant='outline' isLoading={isLoading} rounded={'md'} colorScheme={text.color} onClick={handler}>{text.button}</Button>
         </ModalFooter>
         </ModalContent>

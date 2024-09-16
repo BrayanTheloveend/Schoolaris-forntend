@@ -6,18 +6,18 @@ import { primaryLight, vert } from '../theme'
 const CustomHeading = ({title, prevSection, currentSection, nextSection}) => {
   return (
     <>
-        <Heading my={5} fontFamily={'Poppins'} fontWeight={600} fontSize={'3xl'} id='triggerNav'>{title}</Heading>
+        <Heading my={5} fontFamily={'Poppins'} fontWeight={{base: 400, md: 600}}  fontSize={{base: '2xl', md:'3xl'}}>{title}</Heading>
         <Breadcrumb separator={<ChevronRightIcon color='gray.500' />}>
           <BreadcrumbItem>
-            <BreadcrumbLink fontWeight={500}>{prevSection}</BreadcrumbLink>
+            <BreadcrumbLink fontWeight={{base: 400, md: 600}}>{prevSection}</BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink color={ !nextSection && vert} fontWeight={500}>{currentSection}</BreadcrumbLink>
+            <BreadcrumbLink color={ !nextSection && vert}  fontWeight={{base: 400, md: 600}}>{currentSection}</BreadcrumbLink>
           </BreadcrumbItem>
 
           { nextSection && <BreadcrumbItem>
-            <BreadcrumbLink color={vert} fontWeight={500}>{nextSection}</BreadcrumbLink>
+            <BreadcrumbLink color={vert} fontWeight={{base: 400, md: 600}}>{nextSection}</BreadcrumbLink>
           </BreadcrumbItem>}
         </Breadcrumb>
     </>

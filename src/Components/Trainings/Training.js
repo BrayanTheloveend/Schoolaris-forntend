@@ -1,27 +1,27 @@
-import { Box, Text, Button, Flex, Grid, GridItem, Icon, IconButton, useColorModeValue, useDisclosure, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react'
+import { Box, Text, Button, Flex, Grid, GridItem, Icon, IconButton, useColorModeValue, useDisclosure, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
 //import CustomGrid from '../Student/CustomGrid'
 import AddTraining from './AddTraining'
-import { FiChevronLeft, FiFilter, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
+import { FiFilter, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
 import CustomTable from '../Dashboard/CustomTable'
 import { useDeleteSubjectMutation, useGetSubjectQuery } from '../Redux/ApiSlice'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
-import { Maincolor, containerVariant, formatter, vert } from '../theme'
-import { listIcon } from '../theme'
+import { containerVariant, formatter, vert } from '../theme'
 import { useNavigate } from 'react-router-dom'
 
 const Training = () => {
 
   const [toogle, setToogle] = useState(false) 
   const bg = useColorModeValue('white', 'gray.800')
-  const text1 = useColorModeValue('gray.700', 'white')
   const textcolor = useColorModeValue('gray.600','gray.400')
   const [loading, setLoading] = useState(false) 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [id, setId] = useState({ index: 0, current: 0})
   const [onUpdate, setOnUpdate] = useState(false)
+  const [searchOn, setSearchOn] = useState(true)
+  const [searchValue, setSearchValue] = useState('')
   const navigate = useNavigate()
 
   // ALERTS
@@ -51,6 +51,7 @@ const Training = () => {
   const [isChecked, setIsChecked] = useState(false)
   
   const [ Data, setData ] = useState([])
+  const [ table, setTable ] = useState([])
 
   const handleChange= (e)=>{
       const { name, checked } = e.target
@@ -66,6 +67,22 @@ const Training = () => {
         setData(tempData)
       }
   }
+  
+
+ 
+useEffect(()=>{
+  if(searchValue.length !== 0){
+    let tempData = Data.filter(elt=>  elt.name.toLowerCase().includes(searchValue.toLowerCase()))
+    setData(tempData)
+  }else{
+    setData(table)
+  }
+ 
+}, [searchValue])
+      
+    
+      
+  
 
 //GETSTUDENTS
 
@@ -76,12 +93,13 @@ const Training = () => {
         navigate('/login')
       }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
       }
       
     }else if(isSuccess){
       console.log(data);
       setData(data)
+      setTable(data)
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
   }, [isSuccess, isError, error, isLoading, data, showMessage, navigate])
@@ -130,7 +148,7 @@ const Training = () => {
             accessor: "fees"
           },
           {
-            Header: "Code",
+            Header: "Code ",
             accessor: "code"
           },
           {
@@ -160,7 +178,7 @@ Data.map(elt=>{
         <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
           {elt.name}
         </Text>, 
-      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> # {elt.sigle} </Text>,   
+      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}>{elt.sigle} </Text>,   
       fees: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert} > {formatter.format(elt.fees)}</Text>,   
       label: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1}  color={textcolor}>{elt.description}</Text>,
       level: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} color={textcolor}>{elt.level}</Text>,
@@ -201,7 +219,7 @@ Data.map(elt=>{
       initial={'hidden'}
       animate={'visible'}
     >
-      <CustomHeading title={'Specialitées'} prevSection={'Filiére'} currentSection={ toogle ? 'Add Subject':  'Listes des filiéres'} nextSection={null}/>
+      <CustomHeading title={'Gestion des Formations'} prevSection={'Filiére'} currentSection={ toogle ? 'Add Subject':  'Listes des filiéres'} nextSection={null}/>
 
       {
         toogle ?
@@ -228,7 +246,7 @@ Data.map(elt=>{
                         color={ isChecked  ? 'red.400' : 'gray.500'}
                         fontWeight={600}
                         cursor={'pointer'}>
-                        Delete ({Data.filter(item => item?.isChecked === true ).length })
+                        { Data.filter(item => item?.isChecked === true ).length } Delete
                       </Text>
                     </Flex>
            
@@ -245,9 +263,16 @@ Data.map(elt=>{
                       
                       { !toogle && <> 
                         <Icon as={FiFilter}/>
-                        <Icon fontSize={'16px'} as={FiSearch}/>
+                        { !searchOn &&<InputGroup>
+                         <Input placeholder='Rechercher ...' onChange={e=>setSearchValue(e.target.value)}/>
+                            <InputRightElement>
+                              <Icon as={FiSearch} onClick={()=>setSearchOn(true)} w={4}  h={4} color={vert}/>
+                            </InputRightElement>
+                        </InputGroup>}
+                        { searchOn && <Icon fontSize={'16px'} as={FiSearch} onClick={()=>setSearchOn(false)}/>}
                         <Button colorScheme={'green'} 
                         bg={vert}
+                        size={{base: 'sm', md: 'md'}}
                         rounded={'full'}
                         color={'white'}
                         onClick={()=>{

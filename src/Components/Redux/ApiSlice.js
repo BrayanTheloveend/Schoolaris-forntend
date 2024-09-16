@@ -5,12 +5,6 @@ export const ApiSlice = createApi({
     reducerPath: 'Api',
     tagTypes: ['Student', 'Subject', 'Unit', 'Teacher', 'Note', 'Assign', 'Payment', 'Admin', 'Role', 'Lesson', 'Like'],
     baseQuery: fetchBaseQuery({baseUrl: `http://localhost:${process.env.REACT_APP_PORT}/api`,
-
-    //     prepareHeaders: (headers, {getState})=>{
-    //      //const {article: {token}} = getState();
-    
-    //      return headers.set('Authorization', `Bearer ${JSON.parse(localStorage.getItem('userData'))?.token }`)
-    // },
 }),
 
     endpoints: (builder) =>({
@@ -29,6 +23,11 @@ export const ApiSlice = createApi({
 
         getStudentById: builder.query({
             query: id => `Student/GetStudentById/${id}`,
+            providesTags: ['Student']
+        }),
+        getStudentBySubject: builder.query({
+            query: id => `/Student/GetStudentBySubject/${id}`,
+            providesTags: ['Student']
         }),
 
         addStudent: builder.mutation({
@@ -77,9 +76,6 @@ export const ApiSlice = createApi({
         getSubject: builder.query({
             query: token => ({
               url:  '/Subject/GetSubject',
-              headers: {
-                'Authorization': token
-              }
             }),
             
             providesTags: ['Subject']
@@ -309,8 +305,16 @@ export const ApiSlice = createApi({
 
 
         getPaymentByStudentId: builder.query({
-            query: id=> `/Payment/GetPaymentByStudentId/${id}`,
-            invalidatesTags: ['Payment']
+            query: payload=> ({
+                
+                url: `/Payment/GetPaymentByStudentId/${payload.id}`,
+                method: 'GET',
+                headers: {
+                    'Authorization': payload.token
+                }
+            }),
+            
+            providesTags: ['Payment']
         }),
 
 
@@ -324,6 +328,22 @@ export const ApiSlice = createApi({
                 headers: {
                     'withCredentials': true
                 }
+            }),
+        }),
+
+        verify: builder.mutation({
+            query: payload => ({ 
+                url: `/Auth/Verify`,
+                method: 'POST',
+                body: payload,
+            }),
+        }),
+
+        sendCode: builder.mutation({
+            query: payload => ({ 
+                url: `/Auth/ResendCode`,
+                method: 'POST',
+                body: payload,
             }),
         }),
 
@@ -424,6 +444,11 @@ export const ApiSlice = createApi({
             providesTags: ['Lesson']
         }),
 
+        GetLesson: builder.query({
+            query: ()=> `/Lesson/GetLesson`,
+            providesTags: ['Lesson']
+        }),
+
         AddLesson: builder.mutation({
             query: payload => ({ 
                 url: `/Lesson/AddLesson`,
@@ -450,6 +475,15 @@ export const ApiSlice = createApi({
         providesTags: ['Like']
     }),
 
+    DeleteLessonGroup: builder.mutation({
+        query: payload => ({ 
+            url: `/Lesson/DeleteLessonGroup`,
+            method: 'DELETE',
+            body: payload
+        }),
+        invalidatesTags: ['Lesson']
+    }),
+
 
 
 
@@ -470,6 +504,7 @@ export const ApiSlice = createApi({
 
 export const { 
     useGetStudentQuery,
+    useGetStudentBySubjectQuery,
     useGetSubjectQuery,
     useAddStudentMutation,
     useGetSubjectByIdQuery,
@@ -517,8 +552,11 @@ export const {
     useGetTeacherByUnitIdQuery,
     useGetTeacherByIdQuery,
     useGetLikeByLessonIdQuery,
-    useDeleteLessonMutation
-    
+    useDeleteLessonMutation,
+    useGetLessonQuery,
+    useDeleteLessonGroupMutation,
+    useVerifyMutation,
+    useSendCodeMutation
 
 
 } = ApiSlice

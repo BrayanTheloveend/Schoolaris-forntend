@@ -58,7 +58,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
     isSuccess,
     error,
     isLoading
-  } = useGetSubjectQuery(JSON.parse(localStorage.getItem('userData'))?.token)
+  } = useGetSubjectQuery()
 
   const [ADD] = useAddStudentMutation()
 
@@ -285,12 +285,12 @@ const AddStudent = ({ close, cached, onUpdate }) => {
 
 
   return (
-    <Grid justifyContent={'center'} gridTemplateColumns={'500px'} mt={8}
+    <Grid justifyContent={'center'} gridTemplateColumns={{base: '1fr', md:'500px'}} mt={8}
       as={motion.div}
       initial={{ y: '100vh' }}
       animate={{ y: 0}} 
     >
-        <GridItem  bg={useColorModeValue('white', 'gray.800')} minH={'300px'} pb={6} borderRadius={'20px'}  boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
+        <GridItem  bg={useColorModeValue('white', 'gray.800')} minH={{md: '300px', base: 'max-content'}} pb={6} borderRadius={'20px'}  boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
           <Flex w={'full'} h={'50px'} 
           justifyContent={'center'} 
           alignItems={'center'} 
@@ -315,7 +315,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
            <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Registration</Text> 
           </Flex>
 
-            <Flex mt={6} px={6} justifyContent={'space-between'}>
+            <Flex mt={6} px={6} gap={4} justifyContent={'space-between'}>
               <Box>
                 <FormControl>
                   <FormLabel gap={2} display={'flex'} alignItems={'center'}> <Icon color={vert} as={FaUserCircle} /> Noms</FormLabel>
@@ -361,7 +361,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
                   defaultValue={onUpdate && cached.SubjectId}
                   name='subject' ref={inputRef}
                   id='4'
-                  placeholder='Choisir une Filiére'
+                  placeholder={ isSuccess && data.length === 0 ? 'Aucune Filiére disponible': 'Choisir une Filiére'}
                   onChange={e=> setProfile({...profile, idSubject: e.target.options[e.target.options.selectedIndex].id})}
                   >
                     {
@@ -416,7 +416,7 @@ const AddStudent = ({ close, cached, onUpdate }) => {
 
 
               <ButtonGroup spacing='6' mt={8} justifyContent={'center'} w={"full"}>
-                <Button  w={'30%'} onClick={close}>Cancel </Button>
+                <Button  w={'30%'} onClick={close}>Annuler </Button>
                 <Button colorScheme='green' bg={vert} w={'30%'}  isLoading={loading} loadingText={'Traitement...'} onClick={ !onUpdate ? handleSubmit : handleEdit}>Envoyer</Button>
                 
               </ButtonGroup>

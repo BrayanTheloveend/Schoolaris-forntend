@@ -27,8 +27,7 @@ const CardAnalitic = forwardRef((props, ref)=> {
           <Skeleton isLoaded={props.isLoading}>
             <Text fontWeight={600}  fontSize={'sm'} color={props.colorOne}>{props.total}</Text>
           </Skeleton>
-          <ion-icon name={props.icon} style={{fontSize: '30px'  }}>
-          </ion-icon>
+          {props.icon}
       </Flex>
       <Flex flexDir={'column'} gap={1} >
         <Text  fontWeight={600} color={useColorModeValue('gray.600', 'gray.400')} fontSize={{md:'xl', base: 'md'}}>{props.title}</Text>

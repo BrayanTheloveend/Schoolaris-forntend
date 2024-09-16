@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTable, usePagination } from "react-table";
 import {
   Table,
@@ -55,8 +55,12 @@ function CustomTable({ columns, data, isLoading}) {
     usePagination
   );
 
-  const weight = useColorModeValue('600','unset')
+
   const bg = useColorModeValue('gray.100', 'gray.700')
+
+  useEffect(()=>{
+    setPageSize(5)
+  }, [])
 
   // Render the UI for your table
   return (
@@ -76,7 +80,7 @@ function CustomTable({ columns, data, isLoading}) {
           <Tr>
             <Td colSpan={12} alignContent={'center'} >
               <Flex width={'100%'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                { isLoading ? <CustomLoading /> : <><Image src={image} maxW={{base: '8em', md: '10em'}} opacity={0.9} /> <Text mt={3} textAlign={'center'} fontSize={'md'} color={'gray.500'}>Aucune données <br /> disponibles</Text></>}
+                { isLoading ? <CustomLoading /> : <><Image src={image} maxW={{base: '7em', md: '10em'}} opacity={0.9} /> <Text mt={3} textAlign={'center'} fontSize={{base: 'sm', md: 'md'}}  color={'gray.500'}>Aucune données <br /> disponibles</Text></>}
 
               </Flex>
             </Td>
@@ -108,7 +112,10 @@ function CustomTable({ columns, data, isLoading}) {
           </Tooltip>
           <Tooltip label="Previous Page">
             <IconButton
-              onClick={previousPage}
+              onClick={()=>{
+                previousPage()
+               
+              }}
               isDisabled={!canPreviousPage}
               icon={<ChevronLeftIcon h={6} w={6} />}
             />
@@ -119,7 +126,7 @@ function CustomTable({ columns, data, isLoading}) {
           <Text fontSize={{base: 'sm', md: 'md'}} flexShrink="0" mr={8}>
             Page{" "}
             <Text fontSize={{base: 'sm', md: 'md'}} fontWeight="bold" as="span">
-              {pageIndex + 1}
+              {parseInt(pageIndex) + 1}
             </Text>{" "}
             of{" "}
             <Text fontSize={{base: 'sm', md: 'md'}} fontWeight="bold" as="span">
@@ -164,7 +171,10 @@ function CustomTable({ columns, data, isLoading}) {
           <Tooltip label="Next Page">
             <IconButton
               fontSize={{base: 'sm', md: 'md'}}
-              onClick={nextPage}
+              onClick={()=>{
+                nextPage()
+               
+              }}
               isDisabled={!canNextPage}
               icon={<ChevronRightIcon h={6} w={6} />}
             />

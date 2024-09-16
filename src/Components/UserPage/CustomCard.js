@@ -7,7 +7,6 @@ import {
     Text,
     useColorModeValue,
   } from '@chakra-ui/react'
-import { primaryLight, primaryDark } from '../theme'
 
 
 const CustomCard = ({ heading, description, icon, href }) => {
@@ -32,12 +31,12 @@ const CustomCard = ({ heading, description, icon, href }) => {
             {icon}
           </Flex>
           <Box mt={2}>
-            <Heading size="md" >{heading}</Heading>
-            <Text mt={1} fontSize={'md'} noOfLines={5}>
+            <Heading size="md" fontWeight={500} >{heading}</Heading>
+            <Text mt={1} fontSize={'md'} noOfLines={4}>
               {description}
             </Text>
           </Box>
-          <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+          <Button variant={'link'} colorScheme={'green'} size={'sm'}>
             En savoir plus
           </Button>
         </Stack>

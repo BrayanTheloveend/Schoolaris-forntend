@@ -57,9 +57,9 @@ const AddLessons = ({onUpdate, cached, setShow}) => {
     if(isError){
       if(error.status=== 401){
         //navigate('/login')
-      }else{
+      }else if(error.status=== 409){
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        showMessage('warning', 'Aucun professeur pour cette UA', 'Fetch Task')
       }
     }else if(isSuccess){
       //console.log(data);
@@ -171,7 +171,7 @@ const handleSubmit =()=>{
 
 
   return (
-    <Grid justifyContent={'center'} gridTemplateColumns={'400px'} mt={14}>
+    <Grid justifyContent={'center'} gridTemplateColumns={{base: '1fr', md:'400px'}} mt={14}>
         <GridItem bg={useColorModeValue('white', 'gray.800')} minH={'300px'} pb={6} borderRadius={'20px'}  boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
         <Flex w={'full'} h={'50px'} 
         justifyContent={'center'} 

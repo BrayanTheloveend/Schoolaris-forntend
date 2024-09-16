@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
-import { Avatar, Box, Button, Flex, Grid, GridItem, IconButton, Skeleton, Tag, TagLabel, TagLeftIcon, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, Grid, GridItem, IconButton, Input, InputGroup, InputRightElement, Skeleton, Tag, TagLabel, TagLeftIcon, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import AddStudent from './AddStudent'
 import { useActiveStudentMutation, useDeleteStudentMutation, useGetStudentQuery } from '../Redux/ApiSlice'
 import { useNavigate } from 'react-router-dom'
@@ -18,14 +18,17 @@ const Student = () => {
 
   const [toogle, setToogle] = useState(false) 
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const modalOne = useDisclosure()
   const [ onUpdate, setOnUpdate ] = useState(false)
+  const [ Data, setData ] = useState([])
   const [toogleAdd, setToogleAdd] = useState(false)
+  const [searchOn, setSearchOn] = useState(true)
   const [loading, setLoading] = useState(false)
+  const savedData = JSON.parse(localStorage.getItem('userData'))
 
   const navigate = useNavigate()
   const textcolor = useColorModeValue('gray.600','gray.400')
   const bg = useColorModeValue('white', 'gray.800')
-  const color = useColorModeValue('gray.700', 'white')
   const borderColor = useColorModeValue('#efefef', 'gray.800')
   
 
@@ -63,21 +66,21 @@ const Student = () => {
     isSuccess,
     error,
     isLoading
-  } = useGetStudentQuery(JSON.parse(localStorage.getItem('userData'))?.token)
+  } = useGetStudentQuery(savedData?.token)
 
   useEffect(() => {
     if(isError){
       if(error.status=== 401){
-        navigate('/login')
+        modalOne.onOpen()
       }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
       }
     }else if(isSuccess){
-      //console.log(data);
+      setData(data);
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [isSuccess, isError, error, isLoading, data, navigate, showMessage])
+  }, [isSuccess, isError, error, isLoading, data, modalOne, showMessage])
 
   //DELETE REQUEST
 
@@ -96,6 +99,19 @@ const Student = () => {
       showMessage('error', err.message , 'Delete Task')
     })
   }
+
+
+  const handleSeachOn = (keyword)=>{
+    let tempData = Data
+    if(keyword.length !== 0){
+      tempData = Data.filter(elt=>  elt.name.toLowerCase().includes(keyword.toLowerCase()))
+      setData(tempData)
+    }else{
+      setData(tempData)
+    }
+      
+  }
+
 
   //ACTIVATE
 
@@ -191,7 +207,7 @@ const Student = () => {
   //Format data
 
   const FormatData = isSuccess ?
-  data.map(elt=>{
+  Data.map(elt=>{
    return(
      {
        key: elt.id,
@@ -273,7 +289,7 @@ const Student = () => {
                         <Flex alignItems={'center'} justifyContent={'center'} gap={6}>
                           <Flex gap={2} align={'center'}>
                             <Skeleton isLoaded={isSuccess} >
-                              { isSuccess && <Text fontSize={'xl'} color={vert} fontWeight={600}>{data.length} </Text>}
+                              { isSuccess && <Text fontSize={{base: 'md', md: 'xl'}} color={vert} fontWeight={600}>{ isSuccess && data.length} </Text>}
                             </Skeleton>
                             
                           </Flex>
@@ -281,8 +297,15 @@ const Student = () => {
                         
                         <Flex gap={3} alignItems={'center'}>
                           <Icon as={FiFilter}/>
-                          <Icon fontSize={'16px'} as={FiSearch}/>
-                          <Button colorScheme={'green'} bg={vert} rounded={'full'} onClick={()=>setToogleAdd(true)}><FiPlus/> Ajouter</Button>
+                          { !searchOn &&<InputGroup>
+                          <Input placeholder='Rechercher ...' onChange={e=>handleSeachOn(e.target.value)}/>
+                              <InputRightElement>
+                                <Icon as={FiSearch} onClick={()=>setSearchOn(true)} w={4}  h={4} color={vert}/>
+                              </InputRightElement>
+                          </InputGroup>}
+                          { searchOn && <Icon fontSize={'16px'} as={FiSearch} onClick={()=>setSearchOn(false)}/>}
+
+                          <Button  size={{base: 'sm', md: 'md'}} colorScheme={'green'} bg={vert} rounded={'full'} onClick={()=>setToogleAdd(true)}><FiPlus/> Ajouter</Button>
                           <Icon fontSize={'16px'} as={FiPrinter}/> 
                         </Flex> 
                       </Flex>}
@@ -309,6 +332,21 @@ const Student = () => {
           isSuccess={isSuccess}
           handler={()=>{ modalData.toggle ? handleClick(id.current) : Activate(id.current)}}
         />
+
+        <CustomModal
+            onClose={modalOne.onClose}
+            isOpen={modalOne.isOpen}
+            isLoading={false}
+            closeOnOverlayClick
+            isSuccess={true}
+            title={'Session Expirée'}
+            data={''}
+            text={{
+            message : <> Chére utilisateur <strong>{savedData?.name}</strong> votre session a éxpirée ! Connectez-vous pour continuer</>,
+            color: 'blue',
+            button: 'Se connecter'
+            }}
+            handler={()=>navigate('/login')}/>
     </Box>
   )
 }

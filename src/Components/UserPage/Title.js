@@ -8,6 +8,7 @@ const Title = ({children}) => {
       <Heading 
         fontSize={{ base: '2xl', sm: '3xl' }}  
         className='TitleMark'
+        fontWeight={600}
         mt={10}
         mb={10}
         // _after={{

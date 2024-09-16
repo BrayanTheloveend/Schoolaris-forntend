@@ -166,7 +166,7 @@ const AddTraining = ({close, onUpdate, cached}) => {
 
 
   return (
-    <Grid justifyContent={'center'} gridTemplateColumns={'400px'} mt={8}>
+    <Grid justifyContent={'center'} gridTemplateColumns={{base: '1fr', md:'400px'}} mt={8}>
         <GridItem bg={useColorModeValue('white', 'gray.800')} minH={'300px'} pb={6} borderRadius={'20px'}  boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
           <Flex w={'full'} h={'50px'} 
           justifyContent={'center'} 

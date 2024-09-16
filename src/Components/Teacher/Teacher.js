@@ -70,7 +70,7 @@ const Teacher = () => {
         navigate('/login')
       }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
       }
     }else if(isSuccess){
       //console.log(data);
@@ -246,13 +246,13 @@ const Teacher = () => {
 
                   <Flex alignItems={'center'} justifyContent={'center'} onClick={()=>setShow(false)} gap={6}>
                       { show && <Icon color={vert} as={FiArrowLeft} fontSize={20}  />}
-                      <Text fontSize={'xl'} color={vert} fontWeight={600}>{show ? 'Back' : isSuccess ? data.length : 'wait'} </Text>
+                      <Text fontSize={{base: 'md', md: 'xl'}} color={vert} fontWeight={600}>{show ? 'Retour' : isSuccess ? data.length : 'Calcul...'} </Text>
                   </Flex>
                   
                   <Flex gap={3} alignItems={'center'}>
                     { !show && <> 
                       <Icon fontSize={'16px'} as={FiSearch}/>
-                      <Button colorScheme={'green'} bg={vert} color={'white'} rounded={'full'} onClick={()=>setToggle(false)}><FiPlus/> Ajouter</Button>
+                      <Button colorScheme={'green'} size={{base: 'sm', md: 'md'}} bg={vert} color={'white'} rounded={'full'} onClick={()=>setToggle(false)}><FiPlus/> Ajouter</Button>
                     </>}
 
                     { !show ?  <Icon fontSize={'16px'} as={FiPrinter}/> : <Button colorScheme={Maincolor} rounded={'full'}><FiPrinter/> Imprimer</Button>}

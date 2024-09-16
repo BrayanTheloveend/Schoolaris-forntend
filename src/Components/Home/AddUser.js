@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, HStack, In
 import Upload from '../Custom/Upload'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash, FaMailBulk, FaMailchimp, FaUser } from 'react-icons/fa'
-import { Maincolor } from '../theme'
+import { Maincolor, vert } from '../theme'
 import { useNavigate } from 'react-router-dom'
 import { useAddAdminMutation, useGetRoleQuery } from '../Redux/ApiSlice'
 
@@ -214,8 +214,8 @@ const AddUser = ({close}) => {
         </Flex>
 
         <ButtonGroup w={'full'} gap={4} justifyContent={"center"}>
-            <Button w={'50%'} isLoading={loading} colorScheme={Maincolor} onClick={handleSubmit}>Submit</Button>
-            <Button onClick={close} colorScheme='red' variant={'outline'}>Cancel</Button>
+            <Button w={'50%'} bg={vert} isLoading={loading} colorScheme={Maincolor} onClick={handleSubmit}>Engeristrer</Button>
+            <Button onClick={close} colorScheme='red' variant={'outline'}>Annuler</Button>
         </ButtonGroup>
     </Box>
   )

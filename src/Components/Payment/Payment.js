@@ -193,7 +193,7 @@ const Payment = () => {
              title: ''
          })
          
-         setTimeout(navigate, 0, '/dash')
+         setTimeout(navigate, 0, `/student/Details/${id}/${idSubject}`)
        })
        .catch(err=>{
          showMessage('error', err.data.message, 'Payement', 7000, 'top-center');
@@ -216,14 +216,14 @@ const Payment = () => {
     justifyContent={'center'}
     alignItems={'center'}
     >
-        <Box textAlign={'center'} mt={12}>
-            <Flex gap={4} align={'center'} justify={'center'}>
+        <Box textAlign={'center'} mt={{ base: 6, md: 12}}>
+            <Flex gap={4} align={'center'} flexDir={{base: 'column', md: 'row'}} justify={'center'}>
                 <ion-icon name="shield-checkmark-outline" style={{fontSize: '35px', color: vert}}></ion-icon>
                 <Heading color={vert}>Payement Securisée</Heading>
             </Flex>
             <br /><br />
-            <Grid gridTemplateColumns={'250px 350px'} gridRow={'450px'} minW={'600px'} minH={'450px'} bg={bg} rounded={'25px'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
-                <GridItem bgImage={img2} bgSize={'cover'} bgPos={'right'}  borderLeftRadius={'25px'} px={6} py={4}>
+            <Grid gridTemplateColumns={{md: '250px 350px', base: '1fr'}} gridRow={'450px'} minW={{base: 'full', md:'550px'}} minH={{md: '450px', base: 'max-content'}} bg={bg} rounded={'25px'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'}>
+                <GridItem display={{base: 'none', md: 'block'}} bgImage={img2} bgSize={'cover'} bgPos={'right'}  borderLeftRadius={'25px'} px={6} py={4}>
                     <Flex h={'full'} justify={'space-between'} flexDir={'column'}>
                         {/* <Avatar size={'2xl'} src={img2}/> */}
 
@@ -310,16 +310,18 @@ const Payment = () => {
                                 </InputLeftAddon>
                                 <Input
                                 h={'40px'}  
+                                border={'none'}
                                 maxLength={parseInt(payload.method) === 1 || parseInt(payload.method) === 2 ? 9 : 16} 
                                 type={parseInt(payload.method) === 1 || parseInt(payload.method) === 2 ? 'number': 'text'} 
                                 placeholder={ parseInt(payload.method) === 1 || parseInt(payload.method) === 2 ? 'Type your phone number' : 'XXXX-XXXX-XXXX-XXXX' }
-                                border={'none'}
+
                                 onChange={e=>{ 
                                 checkAmount()
                                 setPayload({...payload, mobile: e.target.value})
                                 }}
-                                rounded={0}
+                                
                                 value={payload.mobile.toUpperCase()}
+                                rounded={0}
                                 borderBottom={'1px solid'}
                                 borderColor={'gray.400'} 
                                 _focusVisible={{
@@ -336,16 +338,17 @@ const Payment = () => {
                             <InputGroup>
                                 <Input
                                 h={'40px'}  
-                                maxLength={100}
+                                
                                 fontWeight={600}
                                 fontSize={'xl'}
-                                type='tel' 
-                                placeholder='Amount of Transaction'
                                 border={'none'}
-                                value={payload.amount}
                                 rounded={0}
                                 borderBottom={'1px solid'}
-                                borderColor={'gray.400'} 
+                                borderColor={'gray.400'}
+                                value={payload.amount}
+                                maxLength={100}
+                                type='tel' 
+                                placeholder='Amount of Transaction' 
                                 onChange={e=> setPayload({...payload, amount: e.target.value})}
                                 _focusVisible={{
                                     border: 'none',
@@ -369,7 +372,7 @@ const Payment = () => {
                         
                         <ButtonGroup spacing='6' mt={16} justifyContent={'center'} w={"full"}>
                             <Button colorScheme='green' bg={vert} w={'60%'} rounded={'none'} loadingText={'Processing..'} onClick={handleSubmit} isLoading={loading}><FiCheckCircle/> &nbsp; Purchase</Button>
-                            <Button rounded={'none'} w={'30%'} onClick={()=>setTimeout(navigate, 0, '/student')}>Cancel </Button>
+                            <Button rounded={'none'} w={'30%'} onClick={()=>setTimeout(navigate, 0, `/student/Details/${id}/${idSubject}`)}>Cancel </Button>
                         </ButtonGroup>
 
 

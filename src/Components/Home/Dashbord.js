@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Input, SimpleGrid, Skeleton, Table, TableContainer,  Tag,  TagLabel,  TagLeftIcon,  Tbody, Td, Text, Th, Thead, Tr,  useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, Grid, GridItem, Heading, Icon, IconButton, Image,  Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Skeleton, Table, TableContainer,  Tag,  TagLabel,  TagLeftIcon,  Tbody, Td, Text, Th, Thead, Tr,  useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CardAnalitic from './Card'
-import { BiSolidDashboard, BiSolidFolderOpen, BiSolidUser, BiSolidWallet} from 'react-icons/bi'
-import { FiChevronDown, FiSearch } from 'react-icons/fi'
+//import { BiSolidDashboard, BiSolidFolderOpen, BiSolidUser, BiSolidWallet} from 'react-icons/bi'
+import { FiArchive, FiChevronDown, FiPlusCircle, FiSearch } from 'react-icons/fi'
 import CustomHeading from '../Dashboard/CustomHeading'
-import { CheckIcon, DeleteIcon, EditIcon, WarningIcon,} from '@chakra-ui/icons'
+import { CheckIcon, DeleteIcon, WarningIcon,} from '@chakra-ui/icons'
 import CustomTable from '../Dashboard/CustomTable'
 import image from '../../assets/images/Dashboard/datanotfound.png'
 import { motion } from 'framer-motion'
@@ -12,25 +12,48 @@ import { Maincolor, containerVariant, formatter, vert } from '../theme'
 import { useAddRoleMutation, useDeleteRoleMutation, useGetPaymentQuery, useGetRoleQuery, useGetStudentInfoQuery, useGetStudentQuery, useGetTeacherQuery, useGetUserAndRoleQuery, useUpdateRoleMutation } from '../Redux/ApiSlice'
 import { useNavigate } from 'react-router-dom'
 import AddUser from './AddUser'
-import CustomModal from '../Custom/CustomModal'
 import { kFormatter } from '../Custom/formatedNumber'
+import icon1 from '../../assets/ion-icons/fitness.svg'
+import icon2 from '../../assets/ion-icons/paw.svg'
+import icon3 from '../../assets/ion-icons/rainy.svg'
+import icon4 from '../../assets/ion-icons/speedometer.svg'
+import { ImConfused2 } from 'react-icons/im'
+import NotFound from '../../NotFound'
+import Nodata from '../UserPage/Nodata'
+import Events from '../Dashboard/Events'
+import dayjs from 'dayjs'
 
 const Dashbord = () => {
 
     const navigate = useNavigate()
-    const userDataSaved = localStorage.getItem('userData')
-    const bColor = useColorModeValue('gray.200', 'gray.700')
+    const savedData = JSON.parse(localStorage.getItem('userData'))
+    const textColor = useColorModeValue('gray.700','white' )
     const [onUpdate, setOnUpdate] = useState(false)
+    const openModal = useDisclosure()
+
+
+
+
+    // const expiredSession= useCallback((type, msg, title)=>{
+    //     setmodalData({
+    //       message: `Chére utilisateur ${savedData?.name} votre session viens juste d'expirée! connectez-vous pour continuer`, 
+    //       button: 'Se connnecter',
+    //       title: 'Session',
+    //       color: vert,
+    //       toggle: true,
+    //     })
+    // }, [savedData])
+
 
 
     //Dashboard CARD TOTAL PAYMENT
 
     useEffect(() => {
-      if(!userDataSaved){
-        navigate('/login')
+      if(!savedData){
+        openModal.onOpen()
       }
 
-    }, [navigate, userDataSaved])
+    }, [navigate, savedData, openModal])
     
 
 
@@ -82,6 +105,7 @@ const Dashbord = () => {
         })
     }
 
+   
     const [DEL] = useDeleteRoleMutation()
     
     const handleDelete=(id)=>{
@@ -101,7 +125,7 @@ const Dashbord = () => {
 
     const [ADD] = useAddRoleMutation()
     const [SET] = useUpdateRoleMutation()
-    const Role = useGetRoleQuery(JSON.parse(userDataSaved)?.token)
+    const Role = useGetRoleQuery(savedData?.token)
 
     const background = useColorModeValue('white', 'gray.800')
     // const text1 = useColorModeValue('gray.700', 'white')
@@ -110,20 +134,20 @@ const Dashbord = () => {
     //Check Role
 
     useEffect(() => {
-        if(userDataSaved && (JSON.parse(userDataSaved)?.roleName === 'STUDENT' || JSON.parse(userDataSaved)?.roleName === 'TEACHER') ){
+        if(savedData && (savedData?.roleName === 'STUDENT' || savedData?.roleName === 'TEACHER') ){
           setTimeout(navigate, 0, '/')
         }
-      }, [navigate, userDataSaved])
+      }, [navigate, savedData])
 
 
 
 
-    const Payment = useGetPaymentQuery(JSON.parse(userDataSaved)?.token)
+    const Payment = useGetPaymentQuery(savedData?.token)
     
     useEffect(() => {
     if(Payment.isError){
         if(Payment.error.status=== 401){
-        navigate('/login')
+        openModal.onOpen()
         }else{
         //console.log(error.error);
         showMessage('error', 'Server has been stopped', 'Fetch Task')
@@ -132,7 +156,7 @@ const Dashbord = () => {
         //console.log(data);
         //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-    }, [Payment.isSuccess, Payment.isError, Payment.error, Payment.isLoading, Payment.data, navigate, showMessage])
+    }, [Payment.isSuccess, Payment.isError, Payment.error, Payment.isLoading, Payment.data, navigate, showMessage, openModal])
     
 
     const Teacher = useGetTeacherQuery()
@@ -140,33 +164,33 @@ const Dashbord = () => {
     useEffect(() => {
     if(Teacher.isError){
         if(Teacher.error.status=== 401){
-        navigate('/login')
+            openModal.onOpen()
         }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
         }
     }else if(Teacher.isSuccess){
         //console.log(data);
         //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-    }, [Teacher.isSuccess, Teacher.isError, Teacher.error, Teacher.isLoading, Teacher.data, navigate, showMessage])
+    }, [Teacher.isSuccess, Teacher.isError, Teacher.error, Teacher.isLoading, Teacher.data, navigate, showMessage, openModal])
     
 
-    const Student = useGetStudentQuery(JSON.parse(userDataSaved)?.token)
+    const Student = useGetStudentQuery(savedData?.token)
     
     useEffect(() => {
     if(Student.isError){
         if(Student.error.status=== 401){
-        navigate('/login')
+            openModal.onOpen()
         }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
         }
     }else if(Student.isSuccess){
         //console.log(data);
         //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-    }, [Student.isSuccess, Student.isError, Student.error, Student.isLoading, Student.data, navigate, showMessage])
+    }, [Student.isSuccess, Student.isError, Student.error, Student.isLoading, Student.data, navigate, showMessage, openModal])
     
 
 
@@ -215,7 +239,7 @@ const Dashbord = () => {
     useEffect(() => {
         if(isError){
             if(error.status=== 401){
-            setTimeout(navigate, 0, '/login')
+            openModal.onOpen()
             }else{
             //console.log(error.error);
             //showMessage('error', 'Server has been stopped', 'Fetch Task')
@@ -224,12 +248,12 @@ const Dashbord = () => {
             //console.log(data);
             //showMessage('success', `${data.length} items found`, 'Fetch Task')
         }
-    }, [isSuccess, isError, error, isLoading, data, navigate ])
+    }, [isSuccess, isError, error, isLoading, data, navigate, openModal ])
 
     useEffect(() => {
         if(Role.isError){
             if(Role.error.status=== 401){
-            setTimeout(navigate, 0, '/login')
+            openModal.onOpen()
             }else{
             //console.log(error.error);
             //showMessage('error', 'Server has been stopped', 'Fetch Task')
@@ -238,7 +262,7 @@ const Dashbord = () => {
             //console.log(data);
             //showMessage('success', `${data.length} items found`, 'Fetch Task')
         }
-    }, [Role.isSuccess, Role.isError, Role.error, Role.isLoading, Role.data, navigate ])
+    }, [Role.isSuccess, Role.isError, Role.error, Role.isLoading, Role.data, navigate, openModal ])
 
 
     //Status Payment
@@ -248,7 +272,7 @@ const Dashbord = () => {
     useEffect(() => {
         if(paymentStatus.isError){
             if(paymentStatus.error.status=== 401){
-                setTimeout(navigate, 0, '/login')
+                openModal.onOpen()
             }else{
             //console.log(error.error);
             //showMessage('error', 'Server has been stopped', 'Fetch Task')
@@ -257,7 +281,7 @@ const Dashbord = () => {
             //console.log(data);
             //showMessage('success', `${data.length} items found`, 'Fetch Task')
         }
-    }, [paymentStatus.isSuccess, paymentStatus.isError, paymentStatus.error, paymentStatus.isLoading,  navigate ])
+    }, [paymentStatus.isSuccess, paymentStatus.isError, paymentStatus.error, paymentStatus.isLoading, navigate, openModal ])
 
     useEffect(() => {
         if(!payload){
@@ -298,11 +322,11 @@ const Dashbord = () => {
                 accessor: "subject"
               },
               {
-                Header: "School Fees",
+                Header: "Pension",
                 accessor: "fees"
               },
               {
-                Header: "payed",
+                Header: "payée",
                 accessor: "payed"
               },
               {
@@ -368,7 +392,8 @@ const Dashbord = () => {
                 title='Revenue' 
                 colorOne={'red.400'} 
                 colorTwo={'#FF0080'} 
-                icon='fitness' 
+                icon={<ion-icon src={icon1} style={{fontSize: '30px'}}>
+                </ion-icon>}
                 label="Montant de la caisse" 
             />
             <MotionBox
@@ -380,7 +405,8 @@ const Dashbord = () => {
                 total={Student.isSuccess && Student.data.length}
                 colorOne={'green.400'} 
                 colorTwo={'green.400'} 
-                icon='rainy' 
+                icon={<ion-icon src={icon3} style={{fontSize: '30px'}}>
+                </ion-icon>} 
                 label="Effectif des etudiants"
             />
             <MotionBox
@@ -390,7 +416,8 @@ const Dashbord = () => {
                 title='Enseignants' 
                 total={Teacher.isSuccess && kFormatter(Teacher.data.length)} 
                 colorOne={'blue.400'} 
-                icon='paw' 
+                icon={<ion-icon src={icon2} style={{fontSize: '30px'  }}>
+                </ion-icon>} 
                 label="Effectif des profs"
                 isLoading= {Teacher.isSuccess} 
             />
@@ -403,7 +430,8 @@ const Dashbord = () => {
                 total='45.1'  
                 colorOne={'yellow.400'} 
                 colorTwo={'orange.400'} 
-                icon='speedometer' 
+                icon={<ion-icon src={icon4} style={{fontSize: '30px'  }}>
+                </ion-icon>} 
                 label="utilisateurs du systéme"
             />
 
@@ -426,7 +454,7 @@ const Dashbord = () => {
                 borderColor={useColorModeValue('#efefef', 'gray.800')}
                 >
                     <Flex alignItems={'center'} mb={3} justifyContent={'space-between'}>
-                        <Text fontSize={'xl'} color={useColorModeValue('gray.700','white' )} fontWeight={600}> Scolarité </Text>
+                        <Text fontSize={{base: 'md', md:'xl'}} color={useColorModeValue('gray.700','white' )} fontWeight={600}> Scolarité </Text>
                         <Flex gap={3} alignItems={'center'}>
                             <Icon as={FiSearch} fontSize={'16px'}/>
                             <Icon as={FiChevronDown} fontSize={'15px'}/>
@@ -486,12 +514,12 @@ const Dashbord = () => {
             </GridItem>
         </SimpleGrid> */}
 
-        {/* JSON.parse(userDataSaved)?.roleName === 'SUPERADMIN' */}
-        { false && <SimpleGrid columns={{base: 1, md: 3, sm: 1}} gap={4} mt={8} >
+        {/* savedData?.roleName === 'SUPERADMIN' */}
+       <SimpleGrid columns={{base: 1, md: 3, sm: 1}} gap={4} mt={8} >
             
 
-            <GridItem rounded={'20px'} bg={background} p={6}>
-                <Text mb={6} fontSize={'md'} fontWeight={600}> ROLE OF USER </Text>
+            {/* <GridItem rounded={'20px'} bg={background} p={6}>
+                <Text mb={6} fontSize={'md'} fontWeight={600}> type d'utilisateur </Text>
 
                 <HStack>
                     <Input h={'38px'} placeholder='Define a new Role of user' value={payload} isDisabled={loading} onChange={e=>setPayload(e.target.value) }/>
@@ -520,14 +548,32 @@ const Dashbord = () => {
                         </Flex>
                     )}
                 </Box>
+            </GridItem> */}
+
+           
+            <GridItem>
+                <Box bg={background} p={6} borderRadius={'20px'} minH={'200px'}>
+                    <Flex alignItems={'center'} mb={6} justifyContent={'space-between'}>
+                        <Text fontSize={{md: 'xl', base: 'md'}} fontWeight={600} color={useColorModeValue('gray.700','white' )}> Todo List </Text>
+                        <Flex gap={3} alignItems={'center'}>
+                            <Icon as={FiPlusCircle} fontSize={'16px'}/>
+                            <Icon as={FiArchive} fontSize={'15px'}/>
+                        </Flex>
+                    </Flex>
+
+
+                    <Flex flexDirection={'column'} gap={2}>
+                        <Nodata/>
+                    </Flex>
+                </Box> 
             </GridItem>
 
 
-            <GridItem p={6} colSpan={2} rounded={'20px'} bg={background}>
+            { savedData.roleName === 'ADMIN' &&  <GridItem p={6} colSpan={2} rounded={'20px'} bg={background}>
 
                 <Flex mb={6} justify={'space-between'} align={'center'}>
-                    <Text fontSize={'md'} fontWeight={600}> ADMIN </Text>  
-                    {toggle && <Button rounded={'20px'} colorScheme={Maincolor} onClick={()=>setToggle(false)}>{toggle ? 'Ajouter' : 'Annuler'}</Button>}
+                    <Text fontSize={{md: 'xl', base: 'md'}} fontWeight={600} color={textColor}> Personnel Administratif</Text>  
+                    {toggle && <Button bg={vert} rounded={'20px'} colorScheme={Maincolor} onClick={()=>setToggle(false)}>{toggle ? 'Ajouter' : 'Annuler'}</Button>}
                 </Flex>
 
                 { toggle ?
@@ -537,7 +583,7 @@ const Dashbord = () => {
                         <Table>
                             <Thead>
                                 <Tr>
-                                    <Th>User</Th>
+                                    <Th>Noms</Th>
                                     <Th>Role</Th>
                                     <Th>Option</Th>
                                 </Tr>
@@ -595,33 +641,49 @@ const Dashbord = () => {
                             </Tbody>
                         </Table>
                     </TableContainer>
-                    :
-                    <Flex my={10} width={'100%'} flexDir={'column'} align={'center'} justify={'center'}>
-                        <Image src={image} w={'6em'} opacity={0.9} /> 
-                        <Heading mt={3} fontSize={'sm'} color={'gray.400'}>No data to display</Heading>
-                    </Flex>
+                    : <Nodata/>
+                    
                     }
                 </Skeleton> : 
                 
                 <AddUser close={()=>setToggle(true)}/>
                 
                 }
-            </GridItem>
+            </GridItem>}
 
 
     
-        </SimpleGrid>}
+        </SimpleGrid>
         
-        <CustomModal
+        {/* <CustomModal
             isOpen={isOpen}
             onClose={onClose}
             title={'Delete Role'}
-            isLoading={loading}
+            isLoading={false}
             text={modalData}
             data={Role.isSuccess && Role.data[id?.index]?.label}
             isSuccess={Role.isSuccess}
-            handler={()=> handleDelete(id.current)}
-        />
+            handler={()=> navigate('/login')}
+        /> */}
+
+
+
+        <Modal isOpen={openModal.isOpen} closeOnOverlayClick={false}>
+            <ModalOverlay />
+            <ModalContent>
+            <ModalHeader>Session expirée</ModalHeader>
+            
+            <ModalBody>
+                <Text noOfLines={3} fontSize={'md'}>Chére utilisateur <strong>{savedData?.name}</strong> votre session a éxpirée ! Connectez-vous pour continuer</Text>
+            </ModalBody>
+
+            <ModalFooter>
+          
+            <Button  fontWeight={500} rounded={'md'} colorScheme={'blue'}  onClick={()=>navigate('/login')}>Se connecter</Button>
+            </ModalFooter>
+            </ModalContent>
+        </Modal>
+
         
     </Box>
   )

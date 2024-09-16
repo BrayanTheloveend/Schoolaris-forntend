@@ -55,6 +55,7 @@ const TeacherDetails = ({ data }) => {
     idUnit: '/',
     start: 0,
     end: 0,
+    day: 'Lundi',
     idSubject: '/'
   })
 
@@ -109,12 +110,13 @@ const TeacherDetails = ({ data }) => {
         idUnit: '/',
         start: 0,
         end: 0, 
+        day: 'Lundi',
         idSubject: subject.data[0].id 
       })
       //console.log(data);
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [subject.isSuccess, subject.isError, subject.error, subject.isLoading, showMessage, subject.data])
+  }, [subject.isSuccess, subject.isError, subject.error, navigate, subject.isLoading, showMessage, subject.data])
 
 
   const unitLearning = useGetUnitBySubjectQuery(subId)
@@ -135,7 +137,7 @@ const TeacherDetails = ({ data }) => {
       })
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [unitLearning.isSuccess, unitLearning.isError, unitLearning.error, unitLearning.isLoading, showMessage, unitLearning.data])
+  }, [unitLearning.isSuccess, unitLearning.isError, unitLearning.error, navigate, unitLearning.isLoading, showMessage, unitLearning.data])
 
 
 
@@ -164,6 +166,7 @@ const TeacherDetails = ({ data }) => {
       setPayload({
         idUnit: '',
         start: 0,
+        day: 'Lundi',
         end: 0,
       })
       onClose()
@@ -186,6 +189,7 @@ const TeacherDetails = ({ data }) => {
       idUnit: '',
       start: 0,
       end: 0,
+      day: 'Lundi'
     })
   }
 
@@ -221,6 +225,7 @@ const TeacherDetails = ({ data }) => {
         idUnit: '/',
         idSubject: 0,
         start: 0,
+        day: 'Lundi',
         end: 0
       })
       
@@ -290,15 +295,15 @@ const TeacherDetails = ({ data }) => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> <FiChevronRight/>  <Text fontWeight={500} color={'gray.600'}>Full Name</Text></Flex> <Text>{`${data?.name} ${data?.surname}`}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}> <FiChevronRight/>  <Text fontWeight={500} color={'gray.600'}>Noms Complet</Text></Flex> <Text>{`${data?.name} ${data?.surname}`}</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Birthday </Text></Flex> <Text>{ dayjs(data.birthday).format('DD/MM/YYYY')}</Text>
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Date de Naissance </Text></Flex> <Text>{ dayjs(data.birthday).format('DD/MM/YYYY')}</Text>
             </ListItem>
             
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Mobile </Text></Flex> <Text>+237 {data?.mobile}</Text> 
+              <Flex gap={2} justifyContent={'center'} alignItems={'center'}><FiChevronRight/><Text fontWeight={500} color={'gray.600'}>Telephone </Text></Flex> <Text>+237 {data?.mobile}</Text> 
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
@@ -315,7 +320,7 @@ const TeacherDetails = ({ data }) => {
 
           <List fontSize={'md'} ml={2} spacing={2}>
             <ListItem display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'}>Courses</Text> <Skeleton isLoaded={request.isSuccess}><Text>{count}</Text></Skeleton>
+              <Text fontWeight={500} color={'gray.600'}>nombre de cours</Text> <Skeleton isLoaded={request.isSuccess}><Text>{count}</Text></Skeleton>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
@@ -323,7 +328,7 @@ const TeacherDetails = ({ data }) => {
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'space-between'}>
-              <Text fontWeight={500} color={'gray.600'}>Rate </Text> <Text>3.5</Text>
+              <Text fontWeight={500} color={'gray.600'}>Note </Text> <Text>3.5</Text>
             </ListItem>
 
             <ListItem display={'flex'} justifyContent={'flex-end'} gap={10}>
@@ -337,7 +342,7 @@ const TeacherDetails = ({ data }) => {
 
       <Box mt={4} w={'full'} boxShadow={'0 0 10px rgba(0, 0, 0, 0.1)'} bg={useColorModeValue('white', 'gray.800')} borderRadius={'30px'} p={6}>
         <Flex justify={'space-between'} align={'center'}>
-          <Text fontSize={'md'} fontWeight={'500'}>Note</Text>
+          <Text fontSize={'md'} fontWeight={'500'}>Planning de cours</Text>
           <Flex gap={2}>
             <Button colorScheme='green' bg={vert} rounded={'full'} onClick={onOpen}><FiPlus/> Ajouter</Button>
           </Flex>
@@ -346,7 +351,7 @@ const TeacherDetails = ({ data }) => {
         <Skeleton isLoaded={request.isSuccess}>
           <TableContainer mt={4}>
             <Table variant='simple'>
-             <TableCaption> { request.isSuccess && request.data.length !== 0 && 'These is represent Teacher Assignments' }</TableCaption> 
+             <TableCaption> { request.isSuccess && request.data.length !== 0 && 'emploi de temps' }</TableCaption> 
               <Thead>
                 { request.isSuccess && request.data.length !== 0 && <Tr>
                   <Th>Filiére</Th>
@@ -389,7 +394,7 @@ const TeacherDetails = ({ data }) => {
                <Tbody>
          
                 <Tr>
-                { request.isSuccess && request.data.length !== 0 && <Td fontSize={'md'}>Unit</Td> }
+                { request.isSuccess && request.data.length !== 0 && <Td fontSize={'md'}>Unité d'ensignement</Td> }
                   { request.isSuccess && request.data.length !== 0 ? 
                     request.data.map((item, index)=> <Td key={index} isNumeric fontWeight={600} fontSize={'md'}>{item.unit}</Td>) :
                   <Flex flexDir={'column'} align={'center'} justify={'center'}>
@@ -400,9 +405,9 @@ const TeacherDetails = ({ data }) => {
                 </Tr> 
                   
                 <Tr>
-                { request.isSuccess && request.data.length !== 0 && <Td fontSize={'md'}>Planing</Td> }
+                { request.isSuccess && request.data.length !== 0 && <Td fontSize={'md'}>Horaire</Td> }
                   {
-                    request.isSuccess && request.data.map((item, index)=> <Td key={index} isNumeric fontWeight={600} fontSize={'md'}>{item.start}h-{item.end}h</Td>)
+                    request.isSuccess && request.data.map((item, index)=> <Td key={index} isNumeric fontWeight={600} fontSize={'md'}> {item.day}&nbsp; {item.start}h-{item.end}h</Td>)
                   }
                 </Tr>
 
@@ -474,6 +479,24 @@ const TeacherDetails = ({ data }) => {
             </Skeleton>
           </FormControl>
 
+          <FormControl>
+              <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon>Jour</FormLabel>
+              <Select 
+                value={payload.day}
+                name='day'
+                placeholder={'Choisir le jour'}
+                onChange={e=> setPayload({...payload, day: e.target.value})}
+                >
+                 <option value={'Lundi'}>Lundi</option>
+                 <option value={'Mardi'}>Mardi</option>
+                 <option value={'Mercredi'}>Mercredi</option>
+                 <option value={'Jeudi'}>Jeudi</option>
+                 <option value={'Vendredi'}>Vendredi</option>
+                 <option value={'Dimanche'}>Dimanche</option>
+                  
+              </Select>
+            </FormControl>
+
           <Flex align={'center'} justify={'space-between'} mt={2} gap={2}>
               <FormControl>
                 <FormLabel alignItems={'center'}  gap={2} mt={1} display={'flex'}><ion-icon name="alarm-outline"></ion-icon>Heure de debut</FormLabel>
@@ -490,7 +513,7 @@ const TeacherDetails = ({ data }) => {
 
         <ModalFooter>
           <Button rounded={'md'} colorScheme='blue' mr={3} onClick={resetAndClose}>
-            Cancel
+            Annuler
           </Button>
           <Button variant='outline' isLoading={loading} rounded={'md'} colorScheme={onUpdate ? 'orange':'green'} isDisabled={disabled} onClick={onUpdate ? handleUpdate : handleSubmit}>{onUpdate ? 'Modifier':'Ajouter'}</Button>
         </ModalFooter>

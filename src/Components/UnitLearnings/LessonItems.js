@@ -2,7 +2,7 @@ import { Avatar, Box, Checkbox, Flex, GridItem, Icon, IconButton, Image, Link, S
 import React, { forwardRef, useEffect } from 'react'
 import { FiDownload, FiHeart } from 'react-icons/fi';
 import { vert } from '../theme';
-import imageTest from '../../assets/convert-google-doc-to-pdf-6.png'
+import imageTest from '../../assets/Contactless-Payment.jpg'
 import { DeleteIcon } from '@chakra-ui/icons';
 import dayjs from 'dayjs';
 import { useGetLikeByLessonIdQuery, useGetTeacherByIdQuery } from '../Redux/ApiSlice';
@@ -70,7 +70,7 @@ const LessonItems = forwardRef((props, ref)=> {
 
         <Flex px={4} py={2} pos={'absolute'} top={0} align={'center'} justify={'space-between'} w={'100%'}>
             <Flex align={'center'} gap={4}>
-                <Checkbox/>
+            <input className="form-check-input" type="checkbox" name={props.data.id} onChange={props.onChange} checked={props.checked} />
                 <Text color={'gray.700'}>selectionner</Text>
             </Flex>
             <Flex gap={2} align={'center'}>

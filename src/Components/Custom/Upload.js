@@ -1,8 +1,8 @@
 import { Avatar, Box, Icon, Input, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import profile from '../../assets/images/profile-3.jpg' 
+import profile from '../../assets/placeholder.jpg' 
 import { FiCamera } from 'react-icons/fi';
-import { primaryLight } from '../theme';
+import { primaryLight, vert } from '../theme';
 
 const Upload = ({handleChange, valid}) => {
 
@@ -18,8 +18,8 @@ const Upload = ({handleChange, valid}) => {
 
 
   return (
-    <Box position={'relative'}  >
-      <Box display={'flex'} position={'relative'} justifyContent={'center'} alignItems={'center'}  h={40} w={40} p={1} rounded={'full'} border={'2px dashed'} borderColor={ valid ? (show ? primaryLight : 'green.400' ) : 'red.400'}>
+    <Box position={'relative'} display={'flex'} justifyContent={'center'} flexDir={'column'} alignItems={'center'}  >
+      <Box display={'flex'} position={'relative'} justifyContent={'center'} alignItems={'center'}  h={40} w={40} p={1} rounded={'full'} border={'1px dashed'} borderColor={ valid ? (show ? 'gray.300' : 'green.400' ) : 'red.400'}>
         <Input
           type="file"
           h={40}
@@ -39,11 +39,11 @@ const Upload = ({handleChange, valid}) => {
           accept=".jpg, .jpeg, .png, .webp"
         />
           <Avatar size={'2xl'} src={preview} />
-          { show && <Icon pos={'absolute'} as={FiCamera} opacity={0.6} color={valid ? (show ? primaryLight : 'green.400' ) : 'red.400'} h={8} w={8} />}
+          { show && <Icon pos={'absolute'} as={FiCamera} opacity={0.6} color={valid ? (show ? vert : 'green.400' ) : 'red.400'} h={8} w={8} />}
         </Box>
       
 
-      <Text fontSize={'xs'} noOfLines={1} color={valid ? (show ? primaryLight : 'green.400' ) : 'red.400'} textAlign={'center'} mt={4} fontWeight={600}>{ show ?' Cliquer pour ajouter ...' : 'Image Ajoutée'} </Text>
+      <Text fontSize={'xs'} noOfLines={1} fontWeight={400} color={valid ? (show ? 'gray.500' : 'green.400' ) : 'red.400'} textAlign={'center'} mt={4}>{ show ?' Cliquer pour ajouter un profil' : 'Image Ajoutée'} </Text>
     </Box>
   )
 }

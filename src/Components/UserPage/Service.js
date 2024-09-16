@@ -11,7 +11,7 @@ import CustomCard from './CustomCard'
 
 const Service = () => {
   return (
-    <Container maxW={'8xl'} mt={12}>
+    <Container maxW={'8xl'} my={12}>
         <Flex flexWrap="wrap" gridGap={6} justify="center">
           <CustomCard
             heading={'Assistance'}
@@ -31,7 +31,7 @@ const Service = () => {
           <CustomCard
             heading={'View Reslut'}
             icon={<Icon as={FcAbout} w={10} h={10} />}
-            description={'Consulter vos notes d\'examen et de controle en temps réelle directement depuis votre smartphone.'}
+            description={'Accédez rapidement aux résultats et aux évaluations. Les étudiants peuvent suivre leur progression, tandis que les enseignants peuvent gérer les notes en toute simplicité'}
             href={'#'}
           />
           {/* <CustomCard

@@ -89,6 +89,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         password: false,
         rePassword: false,
       })
+      setValid(true)
+      setValid2(true)
       window.scrollTo(0, 0)
     }else if(!profile.surname){
       setValidInput({ 
@@ -100,6 +102,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         password: false,
         rePassword: false,
       })
+      setValid(true)
+      setValid2(true)
       window.scrollTo(0, 0)
     }else if(!profile.birthday){
       setValidInput({ 
@@ -111,6 +115,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         password: false,
         rePassword: false,
       })
+      setValid(true)
+      setValid2(true)
     }else if(!CV){
       setValidInput({ 
         name: false,
@@ -122,6 +128,7 @@ const AddTeacher = ({ close, onUpdate }) => {
         rePassword: false,
       })
       setValid2(false)
+      setValid(true)
     }else if(profile.mobile.length !== 9 ){
       setValidInput({ 
         name: false,
@@ -132,6 +139,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         password: false,
         rePassword: false,
       })
+      setValid(true)
+      setValid2(true)
     }else if(!profile.email){
       setValidInput({ 
         name: false,
@@ -143,6 +152,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         rePassword: false,
 
       })
+      setValid2(true)
+      setValid(true)
     }else if(profile.password.length < 8 ){
       setValidInput({ 
         name: false,
@@ -154,6 +165,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         rePassword: false,
 
       })
+      setValid2(true)
+      setValid(true)
     }else if( profile.password !== profile.rePassword){
       setValidInput({ 
         name: false,
@@ -165,6 +178,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         rePassword: true,
 
       })
+      setValid2(true)
+      setValid(true)
     }else if(!picture){
       setValidInput({ 
         name: false,
@@ -174,8 +189,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         email: false,
         password: false,
         rePassword: false,
-
       })
+      setValid2(true)
       window.scrollTo(0, 0)
       setValid(false)
     }
@@ -194,6 +209,8 @@ const AddTeacher = ({ close, onUpdate }) => {
         password: false,
         rePassword: false
       })
+      setValid(true)
+      setValid2(true)
 
       setLoading(true);
       const formData = new FormData();
@@ -225,7 +242,7 @@ const AddTeacher = ({ close, onUpdate }) => {
 
       })
       .catch(err=>{
-        showMessage('error', err.data.message, 'Add Task', 7000, 'top-center');
+        showMessage('success', err.data.message, 'Add Task', 7000, 'top-center');
         setLoading(false);
       })
 
@@ -243,7 +260,7 @@ const AddTeacher = ({ close, onUpdate }) => {
 
 
   return (
-    <Grid justifyContent={'center'} gridTemplateColumns={'500px'} mt={8}
+    <Grid justifyContent={'center'} gridTemplateColumns={{base: '1fr', md:'500px'}} mt={8}
       as={motion.div}
       initial={{ y: '100vh' }}
       animate={{ y: 0}} 
@@ -274,7 +291,7 @@ const AddTeacher = ({ close, onUpdate }) => {
            <Text zIndex={10} fontSize={'2xl'} fontWeight={600} fontFamily={'Poppins'} textAlign={'center'} color={'white'}>Registration</Text> 
           </Flex>
 
-            <Flex mt={6} px={6} justifyContent={'space-between'}>
+            <Flex mt={6} px={6} gap={4} justifyContent={'space-between'}>
               <Box>
                 <FormControl>
                   <FormLabel gap={2} display={'flex'} alignItems={'center'}><Icon color={vert} as={FaUserCircle} /> Name</FormLabel>

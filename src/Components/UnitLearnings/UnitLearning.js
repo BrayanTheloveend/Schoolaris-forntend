@@ -1,25 +1,27 @@
 import { Box, Button, Flex, Grid, GridItem, Icon, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomHeading from '../Dashboard/CustomHeading'
-import { FiChevronLeft, FiFilter, FiPlus, FiPrinter, FiSearch } from 'react-icons/fi'
+import { FiFilter, FiPlus, FiSearch } from 'react-icons/fi'
 import CustomTable from '../Dashboard/CustomTable'
 import { DeleteIcon, EditIcon, InfoIcon } from '@chakra-ui/icons'
 import { useDeleteUnitMutation, useGetUnitQuery } from '../Redux/ApiSlice'
 import AddUnit from './AddUnit'
 import { motion } from 'framer-motion'
-import { Maincolor, containerVariant, listIcon, vert } from '../theme'
+import { containerVariant, vert } from '../theme'
 import { useNavigate } from 'react-router-dom'
 
 const UnitLearning = () => {
     const [toogle, setToogle] = useState(false) 
     const bg = useColorModeValue('white', 'gray.800')
-    const text1 = useColorModeValue('gray.700', 'white')
     const textcolor = useColorModeValue('gray.600','gray.400')
     const [loading, setLoading] = useState(false) 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [id, setId] = useState({ index: 0, current: 0})
     const [onUpdate, setOnUpdate] = useState(false)
     const navigate = useNavigate()
+
+    const openModal = useDisclosure()
+    const savedData = JSON.parse(localStorage.getItem('userData'))
 
     // ALERTS
   const toast = useToast()
@@ -71,17 +73,17 @@ const UnitLearning = () => {
   useEffect(() => {
     if(isError){
       if(error.status=== 401){
-        navigate('/login')
+        openModal.onOpen()
       }else{
         //console.log(error.error);
-        showMessage('error', 'Server has been stopped', 'Fetch Task')
+        //showMessage('error', 'Server has been stopped', 'Fetch Task')
       }
     }else if(isSuccess){
       console.log(data);
       setData(data)
       //showMessage('success', `${data.length} items found`, 'Fetch Task')
     }
-  }, [isSuccess, isError, error, isLoading, data, showMessage, navigate])
+  }, [isSuccess, isError, error, isLoading, data, showMessage, navigate, openModal])
 
 
   //DELETE REQUEST
@@ -151,11 +153,11 @@ Data.map(elt=>{
      key: elt.id,
      checkbox: <input className="form-check-input" type="checkbox" name={elt.id} onChange={handleChange} checked={elt?.isChecked || false} id="flexCheckDefault" />,
      name: 
-        <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={600}>
+        <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={2} fontWeight={500}>
           {elt.name}
         </Text>, 
-      code: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600}> # {elt.code} </Text>,   
-      coef: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} fontWeight={600} color={vert}> {elt.coefficient} Credit </Text>,   
+      code: <Text fontSize={{base: 'sm', md: 'md'}} fontWeight={600} textAlign={'center'} >{elt.code} </Text>,   
+      coef: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1} textAlign={'center'} fontWeight={600} color={vert}> {elt.coefficient} </Text>,   
       label: <Text fontSize={{base: 'sm', md: 'md'}} noOfLines={1}  color={textcolor}>{elt.description}</Text>,
       options:  
       <Flex gap={2}>
@@ -225,7 +227,7 @@ Data.map(elt=>{
                             color={ isChecked  ? 'red.400' : 'gray.500'}
                             fontWeight={600}
                             cursor={'pointer'}>
-                            Delete ({Data.filter(item => item?.isChecked === true ).length })
+                            {Data.filter(item => item?.isChecked === true ).length } Delete
                           </Text>
                         </Flex>
             
@@ -245,6 +247,7 @@ Data.map(elt=>{
                         bg={vert}
                         color={'white'}
                         rounded={'full'}
+                        size={{base: 'sm', md: 'md'}}
                         colorScheme={'green'}
                         onClick={()=>{
                           setToogle(true)
@@ -279,6 +282,29 @@ Data.map(elt=>{
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+
+
+
+
+        
+        <Modal isOpen={openModal.isOpen} closeOnOverlayClick={false}>
+            <ModalOverlay />
+            <ModalContent>
+            <ModalHeader>Session expirée</ModalHeader>
+            
+            <ModalBody>
+                <Text noOfLines={3} fontSize={'md'}>Chére utilisateur <strong>{savedData?.name}</strong> votre session a éxpirée ! Connectez-vous pour continuer</Text>
+            </ModalBody>
+
+            <ModalFooter>
+          
+            <Button  fontWeight={500} rounded={'md'} colorScheme={'blue'}  onClick={()=>navigate('/login')}>Se connecter</Button>
+            </ModalFooter>
+            </ModalContent>
+        </Modal>
+
+
 
     </Box>
   )

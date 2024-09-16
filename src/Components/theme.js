@@ -33,6 +33,22 @@ export const containerVariant={
   }
 }
 
+export const getColorByNote = (value)=>{
+  if(isNaN(value)){
+    return ''
+  }else if(value < 10){
+      return 'red.400'
+  }else if(value >= 10 && value <= 13){
+      return 'yellow.400'
+  }else if(value > 13 && value <= 15){
+      return 'blue.400'
+  }else if(value > 15 && value <= 17){
+      return 'green.400'
+  }else if(value > 17 ){
+      return vert
+  }
+}
+
 export const formatter = new Intl.NumberFormat('FR-es', {
   style: 'currency',
   currency: 'XAF',
