@@ -625,7 +625,7 @@ const StudentDetails = () => {
                     <Td>
                       <IconButton
                         icon={<FiPrinter/>} 
-                        onClick={()=> openPdf(`http://localhost:${process.env.REACT_APP_PORT}/bill/${item.bill}`)}
+                        onClick={()=> openPdf(`${process.env.REACT_APP_PORT}/bill/${item.bill}`)}
                         title='Print Bill'
                         size={{base: 'sm', md: 'sm'}} color={vert} />
                     </Td>

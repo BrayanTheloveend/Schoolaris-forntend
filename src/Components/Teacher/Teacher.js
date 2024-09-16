@@ -180,7 +180,7 @@ const Teacher = () => {
        key: elt.id,
        name: (
        <Flex gap={3}>
-        <Avatar size={{base: 'sm', md: 'md'}} src={`http://localhost:${process.env.REACT_APP_PORT}/image2/${elt.picture}`}/>
+        <Avatar size={{base: 'sm', md: 'md'}} src={`${process.env.REACT_APP_PORT}/image2/${elt.picture}`}/>
           <Box>
             <Text fontSize={{base: 'sm', md: 'md'}} color={textcolor} noOfLines={1} fontWeight={600}>
               {elt.name}

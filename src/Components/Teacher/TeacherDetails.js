@@ -274,7 +274,7 @@ const TeacherDetails = ({ data }) => {
               {data?.email}  
             </Text>
 
-            <Avatar size={'2xl'} mb={2} border={'5px solid'} borderColor={'white'} src={`http://localhost:${process.env.REACT_APP_PORT}/image2/${data?.picture}`}/>
+            <Avatar size={'2xl'} mb={2} border={'5px solid'} borderColor={'white'} src={`${process.env.REACT_APP_PORT}/image2/${data?.picture}`}/>
           </Flex>
 
           <Flex w={'full'} px={8} pos={'absolute'} top={0} zIndex={100} mt={4} justifyContent={'space-between'} alignItems={'center'}>

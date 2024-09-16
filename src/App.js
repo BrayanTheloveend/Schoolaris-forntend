@@ -17,7 +17,7 @@ import Settings from './Components/Settings/Settings';
 import Registration from './Components/Auth/Registration';
 import Profile from './Components/UserPage/Profile';
 import GetLesson from './Components/UserPage/GetLesson';
-import SchoolPay from './Components/UserPage/SchoolPay';
+// import SchoolPay from './Components/UserPage/SchoolPay';
 import NotFound from './NotFound';
 import Note from './Components/UserPage/Note';
 

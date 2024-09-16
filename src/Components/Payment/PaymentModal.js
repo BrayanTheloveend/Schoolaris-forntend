@@ -147,6 +147,7 @@ const PaymentModal = (props) => {
        .catch(err=>{
          showMessage('error', err.data.message, 'Payement', 7000, 'top-center');
          setLoading(false);
+         props.handleClose()
        })
 
       

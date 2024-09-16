@@ -1,7 +1,6 @@
 import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel, Grid, GridItem, Heading, Image, Input, InputGroup, InputLeftAddon, InputRightAddon, Select, Skeleton, Text, useColorModeValue, useToast } from '@chakra-ui/react'
-import { color, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import React, { useCallback, useEffect, useState } from 'react'
-import image from '../../assets/images/pay.jpg'
 import method1 from '../../assets/images/mtn.png'
 import method2 from '../../assets/images/orange.png'
 import method3 from '../../assets/images/logo visa.png'
@@ -197,6 +196,7 @@ const Payment = () => {
        })
        .catch(err=>{
          showMessage('error', err.data.message, 'Payement', 7000, 'top-center');
+         setTimeout(navigate, 0, `/student/Details/${id}/${idSubject}`)
          setLoading(false);
        })
 

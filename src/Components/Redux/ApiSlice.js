@@ -4,7 +4,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 export const ApiSlice = createApi({
     reducerPath: 'Api',
     tagTypes: ['Student', 'Subject', 'Unit', 'Teacher', 'Note', 'Assign', 'Payment', 'Admin', 'Role', 'Lesson', 'Like'],
-    baseQuery: fetchBaseQuery({baseUrl: `http://localhost:${process.env.REACT_APP_PORT}/api`,
+    baseQuery: fetchBaseQuery({baseUrl: `${process.env.REACT_APP_PORT}/api`,
 }),
 
     endpoints: (builder) =>({

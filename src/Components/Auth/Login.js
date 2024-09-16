@@ -185,7 +185,7 @@ const handleSubmit=()=>{
       opacity: 0.5,
     }} h={'100vh'} justify={'center'} align={'center'} bg={`url(${img})`} bgSize={'cover'}>
 
-        <Grid gridTemplateColumns={'350px'} gap={2} gridRow={'300px'} minH={'400px'}>
+        <Grid gridTemplateColumns={{base: '250x', md:'350px'}} gap={2} gridRow={'300px'} minH={'400px'} p={{base: 8, md: 'unset'}}>
             <GridItem border={'2px solid rgba(255, 255, 255, .2)'} backdropFilter={'blur(20px)'} bg={'#efefefe'} boxShadow={ '0 0 12px rgba(0, 0, 0, 0.5)'} rounded={'20px'}  p={6} >
                 <Heading fontSize={'3xl'} color={'white'} textAlign={'center'} my={2}>{shown ? 'Sign In' : 'Verify'}</Heading>
                 <Text textAlign={'center'} color={'white'}>{ shown ? 'Nous sommes content de vous revoir.' : 'Veuillez saisir le code d\'acivation' }</Text>

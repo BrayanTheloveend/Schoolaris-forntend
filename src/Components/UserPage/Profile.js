@@ -70,7 +70,7 @@ const Profile = () => {
                 <Box mt={4}>
                     <Box p={4} border={'2px dashed'} borderColor={vert} position={'relative'} rounded={'full'}>
                         <Avatar size={'2xl'} src={
-                                `http://localhost:${process.env.REACT_APP_PORT}/${ savedData?.roleName === 'STUDENT' ?  `image` : 'image2'}/${ savedData?.picture }`
+                                `${process.env.REACT_APP_PORT}/${ savedData?.roleName === 'STUDENT' ?  `image` : 'image2'}/${ savedData?.picture }`
                             } />
                         <IconButton pos={'absolute'} bg={primaryLight} icon={<EditIcon color={'white'}/>} rounded={'full'} colorScheme='blue'/>
                     </Box>
