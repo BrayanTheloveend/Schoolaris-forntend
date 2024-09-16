@@ -20,7 +20,6 @@ import { primaryDark, colorBase, vert } from '../theme'
 
   
 
-
 export const DesktopNav = () => {
 
     const linkColor = useColorModeValue('gray.600', 'gray.200')
