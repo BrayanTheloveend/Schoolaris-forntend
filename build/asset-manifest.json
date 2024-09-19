@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.48e4da07.css",
-    "main.js": "/static/js/main.7eb08132.js",
+    "main.js": "/static/js/main.3f023a5b.js",
     "static/js/787.163ff83d.chunk.js": "/static/js/787.163ff83d.chunk.js",
     "static/media/study.png": "/static/media/study.7a0b779ed31d72c048bb.png",
     "static/media/Contactless-Payment.jpg": "/static/media/Contactless-Payment.666330dec43253a343e7.jpg",
@@ -24,11 +24,11 @@
     "static/media/fitness.svg": "/static/media/fitness.fda2e50c029545121135c4a7dff455f0.svg",
     "static/media/speedometer.svg": "/static/media/speedometer.f8fc48cc1ba02977b78ee9b98dbc077d.svg",
     "main.48e4da07.css.map": "/static/css/main.48e4da07.css.map",
-    "main.7eb08132.js.map": "/static/js/main.7eb08132.js.map",
+    "main.3f023a5b.js.map": "/static/js/main.3f023a5b.js.map",
     "787.163ff83d.chunk.js.map": "/static/js/787.163ff83d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.48e4da07.css",
-    "static/js/main.7eb08132.js"
+    "static/js/main.3f023a5b.js"
   ]
 }
