@@ -326,7 +326,7 @@ export const ApiSlice = createApi({
                 method: 'POST',
                 body: payload,
                 headers: {
-                    'withCredentials': true
+                    'Access-Control-Allow-Origin': true
                 }
             }),
         }),
